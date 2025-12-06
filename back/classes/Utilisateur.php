@@ -3,7 +3,6 @@
 class Utilisateur {
     private string $login;
     private string $mdp;
-    private array $LesReserves;
 
     public function __construct(string $login, string $mdp) {
         $this->login = $login;
@@ -18,9 +17,6 @@ class Utilisateur {
         return $this->$mdp;
     }
 
-    public function getLesReserves() : array {
-        return $this->$LesReserves;
-    }
 
     public function setLogin(string $login) : void {
         $this->$login = $login;
