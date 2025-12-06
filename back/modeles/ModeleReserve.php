@@ -88,7 +88,7 @@ class ModeleRerseve extends Modele {
         }
     }
 
-    static public function UpdateQuantiteIngredient() : void {
+    static public function updateQuantiteIngredient() : void {
         try {
             $pdo = parent::connexionPDO();
             $sql = "UPDATE Conserver 
