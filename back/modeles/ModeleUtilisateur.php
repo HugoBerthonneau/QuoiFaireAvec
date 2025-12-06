@@ -16,7 +16,7 @@ class ModeleUtilisateur extends Modele {
                 $ligne = $rqt->fetch(PDO::FETCH_ASSOC);
                 $mdp = $ligne['mdp'];
                 $rqt->closeCursor();
-                $cnx=null;
+                $pdo = null;
                 return $mdp;
             } catch (PDOException $e) {
                 throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -36,7 +36,7 @@ class ModeleUtilisateur extends Modele {
                     array_push($logins,$ligne['login']);
                 }
                 $rqt->closeCursor();
-                $cnx=null;
+                $pdo = null;
                 return $logins;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -54,7 +54,7 @@ class ModeleUtilisateur extends Modele {
                 $rqt->bindParam(":mdp",$mdpHache,PDO::PARAM_STR);
                 $rqt->execute();
                 $rqt->closeCursor();
-                $cnx=null;
+                $pdo = null;
                 return true;
             } catch (PDOException $e) {
                 throw new PDOException($e->getMessage(), (int)$e->getCode());

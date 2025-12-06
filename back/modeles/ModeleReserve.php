@@ -23,7 +23,7 @@ class ModeleRerseve extends Modele {
                 $lesReserves[$numero] = new Reserve($numero,$nom,$ingredients);
             }
             $rqt->closeCursor();
-            $cnx=null;
+            $pdo = null;
             return $lesReserves;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -39,7 +39,7 @@ class ModeleRerseve extends Modele {
             $rqt->bindParam(":login",$login,PDO::PARAM_STR);
             $rqt->execute();
             $rqt->closeCursor();
-            $cnx=null;
+            $pdo = null;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
@@ -59,7 +59,7 @@ class ModeleRerseve extends Modele {
             $rqt->execute();
             $nb = $rqt->rowCount();
             $rqt->closeCursor();
-            $cnx=null;
+            $pdo = null;
             if($nb > 0) {
                 return true;
             }
@@ -69,8 +69,43 @@ class ModeleRerseve extends Modele {
         }
     }
 
-    static public function addIngredientToReserve(string $idIngredient,string $login, int $numero) : void {
-        // TODO
+    static public function addIngredientToReserve(string $idIngredient,string $login, int $numero, float $valeur) : void {
+        if(!self::isIngredientInReserve($login, $numero, $idIngredient)) {
+            try{
+                $pdo = parent::connexionPDO();
+                $sql = "INSERT INTO Conserver VALUES(:numero, :login, :id, CONVERT(:valeur,NUMERIC(7,2)))";
+                $rqt = $pdo->prepare($sql);
+                $rqt->bindParam(":numero",$numero,PDO::PARAM_INT);
+                $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+                $rqt->bindParam(":id",$id,PDO::PARAM_INT);
+                $rqt->bindParam(":valeur",strval($valeur),PDO::PARAM_STR);
+                $rqt->execute();
+                $rqt->closeCursor();
+                $pdo = null;
+            } catch (PDOException $e) {
+                throw new PDOException($e->getMessage(), (int)$e->getCode());
+            }
+        }
+    }
+
+    static public function UpdateQuantiteIngredient() : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "UPDATE Conserver 
+                    SET valeur = :valeur 
+                    WHERE login = :login
+                    AND numero = :numero
+                    AND idIngredient = :id";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":numero",$numero,PDO::PARAM_INT);
+            $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+            $rqt->bindParam(":id",$id,PDO::PARAM_INT);
+            $rqt->bindParam(":valeur",strval($valeur),PDO::PARAM_STR);
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
     }
 
 }

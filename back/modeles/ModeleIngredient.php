@@ -26,22 +26,23 @@ class ModeleIngredient extends Modele {
                 $lesIngredients[$id] = new Ingredient($nom,new Quantite($qte,$unite));
             }
             $rqt->closeCursor();
-            $cnx=null;
+            $pdo = null;
             return $lesIngredients;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
-    
-    static public function insertIngredient(string $nom) : void {
+
+    static public function insertIngredient(string $nom,string $unite) : void {
         try {
             $pdo = parent::connexionPDO();
-            $sql = "INSERT INTO Ingredient VALUES(:nom)";
+            $sql = "INSERT INTO Ingredient VALUES(:nom, :unite)";
             $rqt = $pdo->prepare($sql);
             $rqt->bindParam(":nom",$nom,PDO::PARAM_STR);
+            $rqt->bindParam(":unite",$unite,PDO::PARAM_STR);
             $rqt->execute();
             $rqt->closeCursor();
-            $cnx=null;
+            $pdo = null;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
