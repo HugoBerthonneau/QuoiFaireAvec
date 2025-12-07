@@ -5,7 +5,7 @@ USE dbQFA;
 CREATE TABLE IF NOT EXISTS Utilisateur
 (
     login VARCHAR(30) PRIMARY KEY,
-    mdp VARCHAR(30)
+    mdp VARCHAR(150)
 )Engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Ingredient

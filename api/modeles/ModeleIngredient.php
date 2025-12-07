@@ -1,8 +1,8 @@
 <?php
 
 include_once("Modele.php");
-include_once("../classes/Ingredient.php");
-include_once("../classes/Quantite.php");
+include_once("./classes/Ingredient.php");
+include_once("./classes/Quantite.php");
 
 
 class ModeleIngredient extends Modele {

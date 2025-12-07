@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------
+# 1. Dépendances gérées par Composer (ESSENTIEL)
+# ----------------------------------------------------------------------
+# Exclut le dossier 'vendor' qui contient toutes les bibliothèques.
+# Ce dossier est généré en local via `composer install`.
+/vendor/
+/composer.lock 
+# ^ Certains projets choisissent d'inclure composer.lock pour garantir 
+# que tous les développeurs utilisent les mêmes versions exactes, 
+# mais il est souvent ignoré pour les projets simples ou les libs.
+# Il est généralement RECOMMANDÉ de le versionner pour les APPLICATIONS.
+# Si vous faites une LIBRAIRIE, vous pouvez l'ignorer.
+
+# ----------------------------------------------------------------------
+# 2. Fichiers de configuration / Environnement
+# ----------------------------------------------------------------------
+# Fichiers de configuration de l'environnement local.
+# Les vraies clés (Mots de passe, API keys) ne doivent JAMAIS être commitées.
+# Ces fichiers sont souvent .env ou équivalents, qui contiennent des secrets.
+.env
+.env.local
+.env.testing
+.env.*.local
+*.ini.local
+*.yml.local
+
+# ----------------------------------------------------------------------
+# 3. Fichiers de Cache, Logs et Temporaires
+# ----------------------------------------------------------------------
+# Fichiers de cache générés par le framework (Symfony, Laravel, etc.)
+/cache/
+/log/
+/logs/
+/tmp/
+/temp/
+*.log
+*.tmp
+*.bak
+*.swp # Fichiers temporaires de Vim/Vi
+
+# ----------------------------------------------------------------------
+# 4. Fichiers Spécifiques aux Systèmes d'Exploitation et IDE
+# ----------------------------------------------------------------------
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# JetBrains IDEs (PhpStorm, IntelliJ)
+.idea/
+
+# VS Code
+.vscode/
+# Note : Parfois, on inclut .vscode/settings.json pour des recommandations 
+# de l'équipe, mais le dossier complet est souvent ignoré.
+
+# ----------------------------------------------------------------------
+# 5. Fichiers de Tests et Couverture de Code
+# ----------------------------------------------------------------------
+# Rapports de couverture de code (souvent générés par PHPUnit)
+/web/coverage/
+/build/
+/phpunit.xml.dist
