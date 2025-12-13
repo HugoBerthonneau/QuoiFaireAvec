@@ -5,65 +5,81 @@ include_once("./modeles/ModeleReserve.php");
 
 class UtilisateurController {
     
-    public function __construct() {
-        $uri = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),14);
+    #region CONSTRUCTEUR
+    
+    public function __construct(string $uri) {
+        
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');
         if($method == 'GET') {
-            if($_REQUEST['token'] == ModeleUtilisateur::getToken($_REQUEST['login'])) {
-                switch($uri) {
-                    case "/api/utilisateur/getAllReserves":
-                        $this->getAllReserves();
-                        break;
-                    default:
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Endpoint non trouvé']);
+            switch($uri) {
+                case "/api/utilisateur/getAllReserves":
+                    $this->getAllReserves();
                     break;
-                }
+                default:
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Endpoint non trouvé']);
+                break;
             }
         }
         if($method == 'POST') {
             $param = json_decode(file_get_contents('php://input'), true);
-            if($param['token'] == ModeleUtilisateur::getToken($param['login'])) {
-                switch($uri) {
-                    case "/api/utilisateur/createReserve":
-                        $this->createReserve();
-                        break;
-                    case "/api/utilisateur/createIngredient":
-                        $this->createIngredient();
-                        break;
-                    case "/api/utilisateur/ajouterIngredient":
-                        $this->ajouterIngredient();
-                        break;
-                    default:
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Endpoint non trouvé']);
-                }
+            switch($uri) {
+                case "/api/utilisateur/createReserve":
+                    $this->createReserve();
+                    break;
+                case "/api/utilisateur/createIngredient":
+                    $this->createIngredient();
+                    break;
+                case "/api/utilisateur/ajouterIngredient":
+                    $this->ajouterIngredient();
+                    break;
+                default:
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Endpoint non trouvé']);
             }
         }
         if($method == 'PUT') {
             $param = json_decode(file_get_contents('php://input'), true);
-            if($param['token'] == ModeleUtilisateur::getToken($param['login'])) {
-                switch($uri) {
-                    case "/api/utilisateur/modifierQuantite":
-                        $this->modifierQuantite();
-                        break;
-                    case "/api/utilisateur/modifierNomReserve":
-                        $this->modifierNomReserve();
-                        break;
-                    case "/api/utilisateur/modiferIngredient":
-                        $this->modiferIngredient();
-                        break;
-                    case "/api/utilisateur/modifierMotDePasse":
-                        $this->modifierMotDePasse();
-                        break;
-                    default:                        
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Endpoint non trouvé']);
-                }
+            switch($uri) {
+                case "/api/utilisateur/modifierQuantite":
+                    $this->modifierQuantite();
+                    break;
+                case "/api/utilisateur/modifierNomReserve":
+                    $this->modifierNomReserve();
+                    break;
+                case "/api/utilisateur/modiferIngredient":
+                    $this->modiferIngredient();
+                    break;
+                case "/api/utilisateur/modifierMotDePasse":
+                    $this->modifierMotDePasse();
+                    break;
+                default:                        
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Endpoint non trouvé']);
+            }
+        }
+        if($method == 'DELETE') {
+            $uriExploded = explode('/',$uri);
+            $endpoint = "/" . $uriExploded[1] . "/" . $uriExploded[2] . "/" . $uriExploded[3];
+            switch($endpoint) {
+                case "/api/utilisateur/supprimerIngredient":
+                    $id = $uriExploded[5];
+                    $this->supprimerIngredient($id);
+                    break;
+                case "/api/utilisateur/supprimerReserve":
+                    $numero = $uriExploded[5];
+                    $login = $uriExploded[4];
+                    $this->supprimerReserve($numero,$login);
+                    break;
+                default:                        
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Endpoint non trouvé']);
             }
         }
     }
+
+    #endregion
 
     #region METHODE GET
 
@@ -142,10 +158,32 @@ class UtilisateurController {
     private function modifierMotDePasse() : void {
         $param = json_decode(file_get_contents('php://input'), true);
         if(isset($param['nouveauMdp']) && Validation::validationMdp($param['nouveauMdp'])) {
-            ModeleUtilisateur::updateMdp($param['login'], $param['nouveauMdp']);
+            ModeleUtilisateur::updateMdp($param['login'], password_hash($param['nouveauMdp'], PASSWORD_DEFAULT));
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'nouveau mot de passe manquant']);
+        }
+    }
+
+    #endregion
+
+    #region METHODE DEL
+
+    private function supprimerIngredient(string $id) : void {
+        if(!empty($id)) {
+                ModeleIngredient::deleteIngredientById($id);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'numero manquant']);
+        }
+    }
+
+    private function supprimerReserve(string $numero, string $login) : void {
+        if(!empty($numero) && !empty($login)) {
+            ModeleReserve::deleteReserve($numero,$login);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'numero et/ou login manquant']);
         }
     }
 

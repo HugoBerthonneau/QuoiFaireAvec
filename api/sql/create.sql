@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS Conserver
     FOREIGN KEY (idIngredient) REFERENCES Ingredient(id)
 )Engine=InnoDB;
 
+
 -- INSERTION POUR LE TEST
 
 INSERT INTO Utilisateur (login, mdp,token) VALUES
@@ -71,7 +72,24 @@ INSERT INTO Conserver (numero, login, idIngredient, quantite) VALUES
 -- Marie Curie a 12 unités d'Oeuf dans sa Cave (1)
 (1, 'marie.curie', 2, 12.00);
 
+-- utilisateurs et droits
 
 DROP USER 'accesUtilisateur'@'localhost';
 CREATE USER 'accesUtilisateur'@'localhost';
 GRANT ALL PRIVILEGES ON dbQFA.* TO 'accesUtilisateur'@'localhost';
+
+-- TRIGGERS
+
+DELIMITER $
+
+CREATE TRIGGER suppressionIngredientConserver BEFORE DELETE ON Ingredient
+FOR EACH ROW
+BEGIN
+    DELETE FROM Conserver WHERE idIngredient = OLD.id;
+END$
+
+CREATE TRIGGER suppressionReserveConserver BEFORE DELETE ON Reserve
+FOR EACH ROW
+BEGIN
+    DELETE FROM Conserver WHERE numero = OLD.numero AND login = OLD.login;
+END$

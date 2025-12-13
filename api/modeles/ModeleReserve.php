@@ -148,6 +148,23 @@ class ModeleReserve extends Modele {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
+
+    static public function deleteReserve(string $numero, string $login) : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "DELETE FROM Reserve
+                    WHERE login = :login
+                    AND numero = :numero";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":numero",$numero,PDO::PARAM_INT);
+            $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+            $rqt->execute();
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
 }
 
 

@@ -6,7 +6,7 @@ include_once("./utilitaire/Validation.php");
 
 class VisiteurController {
 
-    public function __construct() {
+    public function __construct(string $uri) {
         $uri = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),14);
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');

@@ -65,6 +65,20 @@ class ModeleIngredient extends Modele {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
+
+    static public function deleteIngredientById(string $id) : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "DELETE FROM Ingredient WHERE id = :id";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":id",$id,PDO::PARAM_INT);
+            $rqt->execute();
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
 }
 
 ?>
