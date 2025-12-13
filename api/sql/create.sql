@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Ingredient
 
 CREATE TABLE IF NOT EXISTS Reserve
 (
-    numero INT AUTO_INCREMENT,
+    numero INT,
     nom VARCHAR(30),
     login VARCHAR(30),
     PRIMARY KEY (numero,login),
