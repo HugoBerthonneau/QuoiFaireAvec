@@ -36,8 +36,26 @@ class ModeleIngredient extends Modele {
     static public function insertIngredient(string $nom,string $unite) : void {
         try {
             $pdo = parent::connexionPDO();
-            $sql = "INSERT INTO Ingredient VALUES(:nom, :unite)";
+            $sql = "INSERT INTO Ingredient (nom, unite) VALUES(:nom, :unite)";
             $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":nom",$nom,PDO::PARAM_STR);
+            $rqt->bindParam(":unite",$unite,PDO::PARAM_STR);
+            $rqt->execute();
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
+    static public function updateIngredient(string $nom, string $unite,int $id) : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "UPDATE Ingredient
+                    SET  nom = :nom, unite = :unite
+                    WHERE id = :id";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":id",$id,PDO::PARAM_INT);
             $rqt->bindParam(":nom",$nom,PDO::PARAM_STR);
             $rqt->bindParam(":unite",$unite,PDO::PARAM_STR);
             $rqt->execute();

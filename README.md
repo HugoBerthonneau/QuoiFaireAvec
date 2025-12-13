@@ -5,3 +5,7 @@
 # TODO 
 
 * méthode qui permet a un utilisateur non connecté d'avoir une recette au hasard
+
+* installer
+
+* Mettre la clé secrete de la génération de JWT dans un .env

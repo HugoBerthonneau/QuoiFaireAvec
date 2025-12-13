@@ -96,6 +96,21 @@ class ModeleUtilisateur extends Modele {
         }
         return "";
     }
+
+    static public function updateMdp(string $login, string $nouveauMdp) : void {
+        try {
+                $pdo = parent::connexionPDO();
+                $sql = "UPDATE Utilisateur SET mdp = :mdp WHERE login = :login";
+                $rqt = $pdo->prepare($sql);
+                $rqt->bindParam(":login", $login, PDO::PARAM_STR);
+                $rqt->bindParam(":mdp", $nouveauMdp, PDO::PARAM_STR);
+                $rqt->execute();
+                $rqt->closeCursor();
+                $pdo = null;
+            } catch (PDOException $e) {
+                throw new PDOException($e->getMessage(), (int)$e->getCode());
+            }
+    } 
 }
 
 ?>

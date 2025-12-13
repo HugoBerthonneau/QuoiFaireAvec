@@ -66,7 +66,7 @@ class VisiteurController {
     private function getRecetteAleatoire() : void {
         http_response_code(501);
         echo json_encode(['error' => 'Not implemented']);
-        // TODO
+        //TODO
     }
 
     #endregion

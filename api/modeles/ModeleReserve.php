@@ -130,6 +130,24 @@ class ModeleReserve extends Modele {
         }
     }
 
+    static public function updateNomReserve(string $nom, string $login, int $numero) : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "UPDATE Reserve 
+                    SET  nom = :nom
+                    WHERE login = :login
+                    AND numero = :numero";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":numero",$numero,PDO::PARAM_INT);
+            $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+            $rqt->bindParam(":nom",$nom,PDO::PARAM_STR);
+            $rqt->execute();
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
 }
 
 

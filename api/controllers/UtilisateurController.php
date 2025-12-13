@@ -29,6 +29,9 @@ class UtilisateurController {
                     case "/api/utilisateur/createReserve":
                         $this->createReserve();
                         break;
+                    case "/api/utilisateur/createIngredient":
+                        $this->createIngredient();
+                        break;
                     case "/api/utilisateur/ajouterIngredient":
                         $this->ajouterIngredient();
                         break;
@@ -45,11 +48,18 @@ class UtilisateurController {
                     case "/api/utilisateur/modifierQuantite":
                         $this->modifierQuantite();
                         break;
+                    case "/api/utilisateur/modifierNomReserve":
+                        $this->modifierNomReserve();
+                        break;
+                    case "/api/utilisateur/modiferIngredient":
+                        $this->modiferIngredient();
+                        break;
+                    case "/api/utilisateur/modifierMotDePasse":
+                        $this->modifierMotDePasse();
+                        break;
                     default:                        
                         http_response_code(404);
                         echo json_encode(['error' => 'Endpoint non trouvé']);
-
-                    
                 }
             }
         }
@@ -85,6 +95,16 @@ class UtilisateurController {
         }
     }
 
+    private function createIngredient() : void {
+        $param = json_decode(file_get_contents('php://input'), true);
+        if(isset($param['nom']) && isset($param['unite'])) {
+            ModeleIngredient::insertIngredient($param['nom'], $param['unite']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'paramètre manquant']);
+        }
+    }
+
     #endregion
 
     #region METHODE PUT
@@ -99,6 +119,35 @@ class UtilisateurController {
         }
     }
 
+    private function modifierNomReserve() : void {
+        $param = json_decode(file_get_contents('php://input'), true); 
+        if(isset($param['nom']) && isset($param['numero'])) {
+            ModeleReserve::updateNomReserve($param['nom'], $param['login'], $param['numero']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'paramètre manquant']);
+        }
+    }
+
+    private function modiferIngredient() : void {
+        $param = json_decode(file_get_contents('php://input'), true);
+        if(isset($param['nom']) && isset($param['unite']) && isset($param['idIngredient'])) {
+            ModeleIngredient::updateIngredient($param['nom'], $param['unite'], $param['idIngredient']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'paramètre manquant']);
+        }
+    }
+
+    private function modifierMotDePasse() : void {
+        $param = json_decode(file_get_contents('php://input'), true);
+        if(isset($param['nouveauMdp']) && Validation::validationMdp($param['nouveauMdp'])) {
+            ModeleUtilisateur::updateMdp($param['login'], $param['nouveauMdp']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'nouveau mot de passe manquant']);
+        }
+    }
 
     #endregion
 }
