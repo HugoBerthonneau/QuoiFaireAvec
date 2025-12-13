@@ -37,7 +37,7 @@ class VisiteurController {
         }
     }
 
-    #region METHODE GET
+    #region GET
     
     private function verifLoginMotDePasse() : void {
         if(isset($_GET['login']) && isset($_GET['mdp'])) {
@@ -71,7 +71,7 @@ class VisiteurController {
 
     #endregion
 
-    #region METHODE POST
+    #region POST
 
     private function creationUtilisateur() : void {
         $param = json_decode(file_get_contents('php://input'), true); 

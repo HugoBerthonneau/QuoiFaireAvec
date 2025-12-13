@@ -81,7 +81,7 @@ class UtilisateurController {
 
     #endregion
 
-    #region METHODE GET
+    #region GET
 
     private function getAllReserves() : void {
         echo json_encode(ModeleReserve::getReservesByLoginUtilisateur($_GET['login']));
@@ -89,7 +89,7 @@ class UtilisateurController {
 
     #endregion
 
-    #region METHODE POST
+    #region POST
 
     private function createReserve() : void {
         $param = json_decode(file_get_contents('php://input'), true); 
@@ -123,7 +123,7 @@ class UtilisateurController {
 
     #endregion
 
-    #region METHODE PUT
+    #region PUT
 
     private function modifierQuantite() : void {
         $param = json_decode(file_get_contents('php://input'), true);
@@ -167,7 +167,7 @@ class UtilisateurController {
 
     #endregion
 
-    #region METHODE DEL
+    #region DELETE
 
     private function supprimerIngredient(string $id) : void {
         if(!empty($id)) {
