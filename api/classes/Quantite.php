@@ -1,6 +1,6 @@
 <?php
 
-class Quantite {
+class Quantite implements JsonSerializable {
     private float $valeur;
     private string $unite;
 
@@ -23,6 +23,13 @@ class Quantite {
     
     public function SubstractFromValeur(float $qte) : void {
         $this->valeur -= $qte;
+    }
+
+    public function jsonSerialize(): mixed {
+        return [
+            'valeur' => $this->valeur,
+            'unite' => $this->unite
+        ];
     }
 }
 

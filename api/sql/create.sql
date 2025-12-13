@@ -5,7 +5,8 @@ USE dbQFA;
 CREATE TABLE IF NOT EXISTS Utilisateur
 (
     login VARCHAR(30) PRIMARY KEY,
-    mdp VARCHAR(150)
+    mdp VARCHAR(150),
+    token VARCHAR(300)
 )Engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Ingredient
@@ -35,10 +36,13 @@ CREATE TABLE IF NOT EXISTS Conserver
     FOREIGN KEY (idIngredient) REFERENCES Ingredient(id)
 )Engine=InnoDB;
 
-INSERT INTO Utilisateur (login, mdp) VALUES
-('jean.dupont', 'P@ssword1'),
-('marie.curie', 'Radium2024'),
-('albert.ein', 'Relativite');
+-- INSERTION POUR LE TEST
+
+INSERT INTO Utilisateur (login, mdp,token) VALUES
+('jean.dupont', '$2y$12$YkWcnX7Q17T2cNCMLx9jKOtUF/1AvDwycX7XYJzppdB7QCCg3G8QS',''), -- P@ssword1
+('marie.curie', '$2y$12$NsyXUv9pL05Q2cvb7/jX2.dyli7CL8dNdDtcEWz4qJj6aUegE8BXq',''), -- Radium2024
+('albert.ein', '$2y$12$8kA/EPzC3SPzr0yuK0lfSOk8RI0mG2eXEYIvDMQtY9HdgfX6ZmlMy','') -- Relativite
+;
 
 INSERT INTO Ingredient (nom, unite) VALUES
 ('Carotte', 'g'),

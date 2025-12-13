@@ -1,6 +1,6 @@
 <?php
 
-class Ingredient {
+class Ingredient implements JsonSerializable {
     private string $nom;
     private Quantite $quantite;
 
@@ -15,7 +15,14 @@ class Ingredient {
 
     public function getQuantite() : Quantite {
         return $this->quantite;
-    }    
+    }
+
+    public function jsonSerialize(): mixed {
+        return [
+            'nom' => $this->nom,
+            'quatite' => $this->quantite
+        ];
+    }
 }
 
 ?>

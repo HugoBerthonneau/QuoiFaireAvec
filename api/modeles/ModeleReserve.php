@@ -5,9 +5,9 @@ include_once("./classes/Reserve.php");
 
 
 
-class ModeleRerseve extends Modele {
+class ModeleReserve extends Modele {
     
-    static public function getReservesByIdUtilisateur(string $login) : array {
+    static public function getReservesByLoginUtilisateur(string $login) : array {
         try {
             $lesReserves = array();
             $pdo = parent::connexionPDO();
@@ -20,7 +20,8 @@ class ModeleRerseve extends Modele {
                 $numero = $ligne['numero'];
                 $nom = $ligne['nom'];
                 $ingredients = ModeleIngredient::getIngredientsByReserve($login,$numero);
-                $lesReserves[$numero] = new Reserve($numero,$nom,$ingredients);
+                $res = new Reserve($numero,$nom,$ingredients);
+                $lesReserves[$numero] = $res;
             }
             $rqt->closeCursor();
             $pdo = null;

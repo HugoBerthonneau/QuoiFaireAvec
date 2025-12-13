@@ -5,13 +5,12 @@ include_once("Modele.php");
 class ModeleUtilisateur extends Modele {
     
     static public function getMotDePasseHache(string $login) : string {
-        if(in_array($login,self::getAllLogins()))
-        {
+        if(in_array($login,self::getAllLogins())) {
             try {
                 $pdo = parent::connexionPDO();
-                $sql = "SELECT * FROM Utilisateur WHERE login = :login";
+                $sql = "SELECT mdp FROM Utilisateur WHERE login = :login";
                 $rqt = $pdo->prepare($sql);
-                $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+                $rqt->bindParam(":login", $login,PDO::PARAM_STR);
                 $rqt->execute();
                 $ligne = $rqt->fetch(PDO::FETCH_ASSOC);
                 $mdp = $ligne['mdp'];
@@ -33,7 +32,7 @@ class ModeleUtilisateur extends Modele {
                 $rqt->execute();
                 $logins = array();
                 while($ligne=$rqt->fetch(PDO::FETCH_ASSOC)) {
-                    array_push($logins,$ligne['login']);
+                    array_push($logins, $ligne['login']);
                 }
                 $rqt->closeCursor();
                 $pdo = null;
@@ -44,14 +43,13 @@ class ModeleUtilisateur extends Modele {
     }
 
     static public function insertUtilisateur(string $login, string $mdpHache) : bool {
-        if(!in_array($login,self::getAllLogins()))
-        {
+        if(!in_array($login,self::getAllLogins())) {
             try {
                 $pdo = parent::connexionPDO();
-                $sql = "INSERT INTO Utilisateur VALUES(:login,:mdp)";
+                $sql = "INSERT INTO Utilisateur VALUES(:login, :mdp, '')";
                 $rqt = $pdo->prepare($sql);
-                $rqt->bindParam(":login",$login,PDO::PARAM_STR);
-                $rqt->bindParam(":mdp",$mdpHache,PDO::PARAM_STR);
+                $rqt->bindParam(":login", $login, PDO::PARAM_STR);
+                $rqt->bindParam(":mdp", $mdpHache, PDO::PARAM_STR);
                 $rqt->execute();
                 $rqt->closeCursor();
                 $pdo = null;
@@ -62,6 +60,41 @@ class ModeleUtilisateur extends Modele {
         }
         return false;
 
+    }
+
+    static public function updateToken(string $login, string $token) : void {
+        try {
+                $pdo = parent::connexionPDO();
+                $sql = "UPDATE Utilisateur SET token = :token WHERE login = :login";
+                $rqt = $pdo->prepare($sql);
+                $rqt->bindParam(":login", $login, PDO::PARAM_STR);
+                $rqt->bindParam(":token", $token, PDO::PARAM_STR);
+                $rqt->execute();
+                $rqt->closeCursor();
+                $pdo = null;
+            } catch (PDOException $e) {
+                throw new PDOException($e->getMessage(), (int)$e->getCode());
+            }
+    }
+
+    static public function getToken(string $login) : string {
+        if(in_array($login,self::getAllLogins())) {
+            try {
+                $pdo = parent::connexionPDO();
+                $sql = "SELECT token FROM Utilisateur WHERE login = :login";
+                $rqt = $pdo->prepare($sql);
+                $rqt->bindParam(":login", $login,PDO::PARAM_STR);
+                $rqt->execute();
+                $ligne = $rqt->fetch(PDO::FETCH_ASSOC);
+                $token = $ligne['token'];
+                $rqt->closeCursor();
+                $pdo = null;
+                return $token;
+            } catch (PDOException $e) {
+                throw new PDOException($e->getMessage(), (int)$e->getCode());
+            }
+        }
+        return "";
     }
 }
 

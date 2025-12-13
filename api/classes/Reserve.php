@@ -1,6 +1,6 @@
 <?php
 
-class Reserve {
+class Reserve implements JsonSerializable {
     private int $numero;
     private string $nom;
     private array $lesIngredients;
@@ -21,6 +21,14 @@ class Reserve {
     
     public function getLesIngredients() : array {
         return $this->lesIngredients;
+    }
+
+    public function jsonSerialize(): mixed {
+        return [
+            'numero' => $this->numero,
+            'nom' => $this->nom,
+            'lesIngredients' => $this->lesIngredients
+        ];
     }
 
 }
