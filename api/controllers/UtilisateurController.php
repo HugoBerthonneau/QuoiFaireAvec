@@ -2,6 +2,7 @@
 
 include_once("./modeles/ModeleUtilisateur.php");
 include_once("./modeles/ModeleReserve.php");
+include_once("./services/RecipeAPIService.php");
 
 class UtilisateurController {
     
@@ -16,10 +17,12 @@ class UtilisateurController {
                 case "/api/utilisateur/getAllReserves":
                     $this->getAllReserves();
                     break;
+                case "/api/utilisateur/getRecetteAvecListe":
+                    $this->getRecetteAvecListe();
+                    break;
                 default:
                     http_response_code(404);
                     echo json_encode(['error' => 'Endpoint non trouvé']);
-                break;
             }
         }
         if($method == 'POST') {
@@ -85,6 +88,11 @@ class UtilisateurController {
 
     private function getAllReserves() : void {
         echo json_encode(ModeleReserve::getReservesByLoginUtilisateur($_GET['login']));
+    }
+
+    private function getRecetteAvecListe() : void {
+        $reserves = ModeleReserve::getReservesByLoginUtilisateur($_GET['login']);
+        echo json_encode(RecipeAPIService::genererRecetteAvecIngredients($reserves)["data"]);
     }
 
     #endregion

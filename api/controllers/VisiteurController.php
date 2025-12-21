@@ -18,9 +18,12 @@ class VisiteurController {
                 case "/api/visiteur/getRecetteAleatoire":
                     $this->getRecetteAleatoire();                    
                     break;
+                case "/api/visiteur/getRecetteAleatoire":
+                    $this->getRecetteAleatoire();
+                    break;
                 default:
                     http_response_code(404);
-                    echo json_encode(['error' => 'endpoint non trouvé']);
+                    echo json_encode(['error' => 'endpoint non trouvé/authentification invalide']);
                     break;
             }
         }
@@ -31,7 +34,7 @@ class VisiteurController {
                     break;
                 default:
                     http_response_code(404);
-                    echo json_encode(['error' => 'endpoint non trouvé']);
+                    echo json_encode(['error' => 'endpoint non trouvé/authentification invalide']);
                     break;
             }    
         }
@@ -64,9 +67,7 @@ class VisiteurController {
     }
 
     private function getRecetteAleatoire() : void {
-        http_response_code(501);
-        echo json_encode(['error' => 'Not implemented']);
-        //TODO
+        echo json_encode(RecipeAPIService::genererRecetteAleatoire()["data"]);
     }
 
     #endregion

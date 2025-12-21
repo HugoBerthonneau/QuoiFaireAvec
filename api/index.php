@@ -1,5 +1,9 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+header('Content-Type: application/json; charset=utf-8');
+
 include_once('controllers/VisiteurController.php');
 include_once('controllers/UtilisateurController.php');
 
@@ -16,7 +20,7 @@ if (isset($headers['Authorization'])) {
 }
 
 if($method == 'GET') {
-    if(isset($_GET['login']) && $token == ModeleUtilisateur::getToken($_GET['login'])) {
+    if(isset($_GET['login']) && !empty($token) && $token == ModeleUtilisateur::getToken($_GET['login'])) {
         $controller = new UtilisateurController($uri);
     } else {
         $controller = new VisiteurController($uri);
@@ -24,7 +28,7 @@ if($method == 'GET') {
 }
 if($method == 'POST' || $method == 'PUT') {
     $param = json_decode(file_get_contents('php://input'), true);
-    if(isset($param['login']) && $token == ModeleUtilisateur::getToken($param['login'])) {
+    if(isset($param['login']) && !empty($token) && $token == ModeleUtilisateur::getToken($param['login'])) {
         $controller = new UtilisateurController($uri);
     } else {
         $controller = new VisiteurController($uri);
@@ -32,7 +36,7 @@ if($method == 'POST' || $method == 'PUT') {
 }
 if($method == 'DELETE') {
     $login = explode('/',$uri)[4];
-    if($token == ModeleUtilisateur::getToken($login)) {
+    if(!empty($token) && $token == ModeleUtilisateur::getToken($login)) {
         $controller = new UtilisateurController($uri);
     } else {
         $controller = new VisiteurController($uri);
