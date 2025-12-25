@@ -73,7 +73,7 @@ class VisiteurController {
         echo json_encode(RecipeAPIService::genererRecetteAleatoire()["data"]);
     }
 
-    private function getIngredients() {
+    private function getIngredients() : void {
         echo json_encode(ModeleIngredient::getAllIngredients());
     }
 

@@ -9,6 +9,9 @@
             #contenu{
                 border: solid white;
             }
+            .reserve{
+                border: solid grey;
+            }
         </style>
     </head>
     <body>
@@ -17,11 +20,6 @@
         </header>
         <nav id="navigation"></nav>
         <div id="contenu">
-
-
-
-
-
         </div>
     </body>
     <footer>
@@ -41,7 +39,7 @@
                 title: 'Recettes',
                 render: () =>
                 `
-                    <button onclick="genererRecetteAleatoire()">G&eacuten&eacuterer une recette Al&eacuteatoire</button>
+                    <button id="generer" onclick="API.genererRecetteAleatoire()">G&eacuten&eacuterer une recette Al&eacuteatoire</button>
                 `
 
             },
@@ -125,14 +123,13 @@
                                     <h3>${reserve.nom} <button onclick="router.navigate('ajouterIngredient')">Ajouter ingr&eacutedient</button></h3>
                                     <ul class="listeIngredients">`;
                                 ingredients = Object.entries(reserve.lesIngredients);
-                                console.log(ingredients);
                                 str += ingredients.map(element => {
                                     const id = element[0];
                                     const ingredient = element[1];
                                     const unite = ingredient.quantite.unite == "u" ? "" : ingredient.quantite.unite;
                                     return `<li>${ingredient.nom} : <input type="number" id="${reserve.numero}-${id}" onchange="API.AjouterModifQuantite(${reserve.numero},${id})" value=${ingredient.quantite.valeur} min=0></input>${unite}</li>`
                                 }).join('');
-                                str += `<button class="sauvegarde" onclick="API.AppliquerModifs()">Sauvegarder</button>`;
+                                str += `<button class="sauvegarde" onclick="API.AppliquerModifs()">Sauvegarder</button></ul></div>`;
                                 return str;
                             }
                             ).join('');
@@ -173,8 +170,6 @@
                     } catch(error) {
                         return `<div class="errMess">${error.message}</div>`;
                     }
-                    
-                        
                 }
             }
         };
@@ -237,7 +232,9 @@
         const router = new Router(views);
 
         const API = {
-            baseURL : 'http://localhost/QuoiFaireAvec/api',
+            baseURL: 'http://localhost/QuoiFaireAvec/api',
+            
+            cooldown: false,
 
             modifs: [],
 
@@ -318,6 +315,50 @@
                 return null;
             },
 
+            async genererRecetteAleatoire() {
+                if (this.cooldown) return;
+                btn = document.getElementById('generer');
+                this.cooldown = true;
+                btn.disabled = true;
+                let secondesRestantes = 30;
+                document.getElementById('contenu').innerHTML += `<div class="notif">Génération des recettes en cours ...</div>`;
+                const recettes = await this.requeter(`/visiteur/getRecetteAleatoire`,{method: 'GET'});
+                const notif = document.getElementsByClassName('notif')[0];
+                if (notif) {
+                    notif.remove();
+                }
+                console.log(recettes);
+                document.getElementById('contenu').innerHTML += recettes.recettes.map(rec => {
+                    let str =`
+                    <div class="recettes"><h2>${rec.nom} : </h2>
+                    <ul><h3>temps de pr&eacuteparation : </h3><li>${rec.temps_preparation}</li></ul>
+                    <ul><h3>Ingredients :</h3>
+                    `;
+                    str += rec.ingredients.map(ing => `<li>${ing.nom} ${ing.quantite} ${ing.unite}</li>`).join('');
+                    str += `
+                    </ul>
+                    <ul><h3>Instructions : </h3>`;
+                    str += rec.instructions.map(ins => `<li>${ins}</li>`).join('');
+                    str += `</ul></div>`;
+                    return str;
+                    }
+                ).join('');
+
+
+                const interval = setInterval(() => {
+                    btn.textContent = `Recharge (${secondesRestantes}s)`;
+                    secondesRestantes--;
+                    if (secondesRestantes < 0) {
+                        clearInterval(interval);
+                        btn.disabled = false;
+                        btn.textContent = "G&eacuten&eacuterer une recette Al&eacuteatoire";
+                        this.cooldown = false;
+                    }
+                }, 1000);
+           
+                
+            },
+
             async ListeIngredients() {                
                 return Object.entries(await this.requeter("/visiteur/getIngredients", {method: 'GET'}));
             },
@@ -334,7 +375,7 @@
                     this.setToken(tkn);
                     const body = JSON.stringify({login: login, nom: nom});
                     this.requeter(`/utilisateur/createReserve`,{method: 'POST', body: body});
-                    document.getElementById('contenu').innerHTML+= `<div class="notif">R&eacuteserve <b>${nom}</b> cr&eacute&eacute</div>`
+                    document.getElementById('contenu').innerHTML += `<div class="notif">R&eacuteserve <b>${nom}</b> cr&eacute&eacute</div>`
                 }
             },
 
@@ -347,7 +388,7 @@
                     this.setToken(tkn);
                     const body = JSON.stringify({login: login, nom: nom, unite: unite});
                     this.requeter(`/utilisateur/createIngredient`,{method: 'POST', body: body});
-                    document.getElementById('contenu').innerHTML+= `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
+                    document.getElementById('contenu').innerHTML += `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
                 }
                 document.getElementById('nomIngredient').value = null;
                 document.getElementById('uniteIngredient').value = null;
@@ -364,20 +405,34 @@
             },
 
             async AjouterIngredient() {
+                const notif = document.getElementsByClassName('notif')[0];
+                if (notif) {
+                    notif.remove();
+                }
                 const login = document.cookie.match(/login=([^;]+)/)[1];
                 const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                if(login && tkn) {
-                    const quantite = document.getElementById('quantite').value;
-                    const numero = document.getElementById('reserve').value;
+                const quantite = document.getElementById('quantite').value;
+                const numero = document.getElementById('reserve').value;
+                const ingredient = document.getElementById('recherche').value;
+                if(login && tkn && quantite && numero && ingredient) {
                     const listeIng = await this.ListeIngredients();
-                    const ingredient = document.getElementById('recherche').value;
+                    let reserves = await this.getReserves();
+                    reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
                     const unite = document.getElementById('lesIngredients').innerHTML.match(new RegExp(`${ingredient}-\\s*\\(([^)]+)\\)`))[1];
-                    const idIngredient = listeIng.map(ing => {
-                        if(ing[1].nom == ingredient && ing[1].quantite.unite == unite) {
-                            return ing[0];
-                        }
-                    })[0];
-                    const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                    const ingTrouve = listeIng.find(ing => ing[1].nom == ingredient && ing[1].quantite.unite == unite);
+                    const idIngredient = ingTrouve[0];
+                    let corresp = reserves.find(res => res.numero == numero).lesIngredients;
+                    corresp = Object.entries(corresp).find(ing => ing[0] == idIngredient);
+                    if(!corresp) {
+                        const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                        this.requeter(`/utilisateur/ajouterIngredient`,{method: 'POST',body: body});
+                        document.getElementById('recherche').value = null;
+                        document.getElementById('quantite').value = 1;
+                        document.getElementById('contenu').innerHTML += `<div class="notif">L'ingredient <b>${ingTrouve[1].nom}</b> &agrave &eacutet&eacute ajout&eacute</div>`
+                    }
+                    else {
+                        document.getElementById('contenu').innerHTML += `<div class="notif">L'ingredient <b>${corresp[1].nom}</b> est d&eacutej&agrave dans cette r&eacuteserve</div>`
+                    }
                 }
             },
 
