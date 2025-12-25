@@ -20,7 +20,7 @@ class Ingredient implements JsonSerializable {
     public function jsonSerialize(): mixed {
         return [
             'nom' => $this->nom,
-            'quatite' => $this->quantite
+            'quantite' => $this->quantite
         ];
     }
 }

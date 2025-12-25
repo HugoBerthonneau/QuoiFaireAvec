@@ -4,7 +4,7 @@ include_once("./classes/Reserve.php");
 
 class RecipeAPIService {
 
-    static function genererRecetteAleatoire(): array {
+    static public function genererRecetteAleatoire(): array {
         $url = 'https://openrouter.ai/api/v1/chat/completions';
         $model = 'tngtech/deepseek-r1t2-chimera:free';
         $apiKey = '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';

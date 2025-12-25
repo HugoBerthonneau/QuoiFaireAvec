@@ -33,6 +33,27 @@ class ModeleIngredient extends Modele {
         }
     }
 
+    static public function getAllIngredients() : array {
+        try {
+            $lesIngredients = array();
+            $pdo = parent::connexionPDO();
+            $sql = "SELECT * FROM Ingredient";
+            $rqt = $pdo->prepare($sql);
+            $rqt->execute();
+            while($ligne=$rqt->fetch(PDO::FETCH_ASSOC)) {
+                $id = $ligne['id'];
+                $nom = $ligne['nom'];
+                $unite = $ligne['unite'];
+                $lesIngredients[$id] = new Ingredient($nom,new Quantite(0,$unite));
+            }
+            $rqt->closeCursor();
+            $pdo = null;
+            return $lesIngredients;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
     static public function insertIngredient(string $nom,string $unite) : void {
         try {
             $pdo = parent::connexionPDO();

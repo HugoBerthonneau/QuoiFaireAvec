@@ -9,3 +9,7 @@
 * installer
 
 * Mettre la clé secrete de la génération de JWT dans un .env
+
+* Ajouter une méthode pour déconnecter l'utilisateur
+
+* Chiffrer le mdp dans la requete pour connecter

@@ -77,27 +77,27 @@ INSERT INTO Ingredient (nom, unite) VALUES
 
 -- Fruits
 INSERT INTO Ingredient (nom, unite) VALUES
-('Pomme', 'unité'),
-('Poire', 'unité'),
-('Banane', 'unité'),
-('Orange', 'unité'),
-('Citron', 'unité'),
-('Citron vert', 'unité'),
+('Pomme', 'u'),
+('Poire', 'u'),
+('Banane', 'u'),
+('Orange', 'u'),
+('Citron', 'u'),
+('Citron vert', 'u'),
 ('Fraise', 'g'),
 ('Framboise', 'g'),
 ('Myrtille', 'g'),
 ('Mûre', 'g'),
 ('Raisin', 'g'),
 ('Cerise', 'g'),
-('Pêche', 'unité'),
-('Abricot', 'unité'),
-('Prune', 'unité'),
-('Kiwi', 'unité'),
-('Mangue', 'unité'),
-('Ananas', 'unité'),
+('Pêche', 'u'),
+('Abricot', 'u'),
+('Prune', 'u'),
+('Kiwi', 'u'),
+('Mangue', 'u'),
+('Ananas', 'u'),
 ('Melon', 'g'),
 ('Pastèque', 'g'),
-('Avocat', 'unité');
+('Avocat', 'u');
 
 -- Viandes
 INSERT INTO Ingredient (nom, unite) VALUES
@@ -126,9 +126,9 @@ INSERT INTO Ingredient (nom, unite) VALUES
 ('Sole', 'g'),
 ('Crevette', 'g'),
 ('Moule', 'g'),
-('Huître', 'unité'),
+('Huître', 'u'),
 ('Calamar', 'g'),
-('Saint-Jacques', 'unité'),
+('Saint-Jacques', 'u'),
 ('Crabe', 'g'),
 ('Homard', 'g');
 
@@ -298,7 +298,7 @@ INSERT INTO Conserver (numero, login, idIngredient, quantite) VALUES
 (2, 'jean.dupont', 3, 1.50),
 -- Jean Dupont a 1.00L de Lait dans son Réfrigérateur (1)
 (1, 'jean.dupont', 4, 1.00),
--- Marie Curie a 12 unités d'Oeuf dans sa Cave (1)
+-- Marie Curie a 12 us d'Oeuf dans sa Cave (1)
 (1, 'marie.curie', 2, 12.00);
 
 
@@ -320,13 +320,13 @@ INSERT INTO Conserver (numero, login, idIngredient, quantite) VALUES
 (1, 'marie.curie', 21, 200.00), -- Champignon 200g
 
 -- Fruits (Cave)
-(1, 'marie.curie', 34, 4.00),   -- Pomme 4 unités
-(1, 'marie.curie', 35, 3.00),   -- Poire 3 unités
-(1, 'marie.curie', 36, 6.00),   -- Banane 6 unités
-(1, 'marie.curie', 37, 5.00),   -- Orange 5 unités
-(1, 'marie.curie', 38, 2.00),   -- Citron 2 unités
+(1, 'marie.curie', 34, 4.00),   -- Pomme 4 us
+(1, 'marie.curie', 35, 3.00),   -- Poire 3 us
+(1, 'marie.curie', 36, 6.00),   -- Banane 6 us
+(1, 'marie.curie', 37, 5.00),   -- Orange 5 us
+(1, 'marie.curie', 38, 2.00),   -- Citron 2 us
 (1, 'marie.curie', 40, 300.00), -- Fraise 300g
-(1, 'marie.curie', 55, 1.00),   -- Avocat 1 unité
+(1, 'marie.curie', 55, 1.00),   -- Avocat 1 u
 
 -- Viandes (Cave - conservées)
 (1, 'marie.curie', 56, 500.00), -- Poulet 500g
