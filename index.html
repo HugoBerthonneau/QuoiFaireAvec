@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <style>
+            *{
+                background-color: black;
+                color: white;
+            }
+            #contenu{
+                border: solid white;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Quoi Faire Avec</h1>
+        </header>
+        <nav id="navigation"></nav>
+        <div id="contenu">
+
+
+
+
+
+        </div>
+    </body>
+    <footer>
+    </footer>
+
+    <script>
+        const views = {
+            accueil: {
+                title: 'Accueil',
+                render: () =>
+                `
+                <h2>Accueil</h2>
+                <div>bienvenue sur Quoi Faire Avec ! </div>
+                `
+            },
+            recettes: {
+                title: 'Recettes',
+                render: () =>
+                `
+                    <button onclick="genererRecetteAleatoire()">G&eacuten&eacuterer une recette Al&eacuteatoire</button>
+                `
+
+            },
+            creationReserve: {
+                title: 'Creation d\'une r&eacute;serve',
+                render: () => 
+                `
+                <h2>Creation d\'une r&eacute;serve</h2>            
+                <div class="formulaire">
+                    <input type="text" id="nomReserve" placeholder="Nom de la r&eacute;serve">
+                    <button onclick="API.CreerReserve()">Cr&eacute;er</button>
+                </div>
+                `
+            },
+            //TODO : TOUTE LA LISTE DES UNITES 
+            creationIngredient: {
+                title: 'Creation d\'un ingr&eacutedient',
+                render: () => 
+                ` 
+                <h2>Creation d\'un ingr&eacutedient</h2>            
+                <div class="formulaire">
+                    <input type="text" id="nomIngredient" placeholder="Nom de l'ingr&eacutedient">
+                    <select name="unite" id="uniteIngredient">
+                        <option value="kg">kg</option>
+                        <option value="mL">mL</option>
+                    </select>
+                    <button onclick="API.CreerIngredient()">Cr&eacute;er</button>
+                </div>
+                ` 
+            },
+            connexionUtilisateur: {
+                title: 'Connexion',
+                render: () =>
+                `
+                <h2>Connexion</h2>            
+                <div class="formulaire">
+                        <input type="text" id="login" placeholder="Login">
+                        <input type="password" id="mdp" placeholder="Mot de passe">
+                        <button onclick="API.ConnecterUtilisateur()">Connexion</button>
+                </div>
+                `
+            },
+            inscriptionUtilisateur: {
+                title: 'Inscription',
+                render: () =>
+                `
+                <h2>Inscription</h2>
+                <div class="formulaire">
+                        <input type="text" id="login" placeholder="Login">
+                        <input type="password" id="mdp" placeholder="Mot de passe">
+                        <button onclick="API.InscrireUtilisateur()">Inscription</button>
+                </div>
+                `
+            },
+            infosUtilisateur: {
+                title: 'Informations',
+                render: () =>
+                `
+                <h2>Informations</h2>
+                <div class="informations">
+                    <Label for="login">Login :</Label>
+                    <input type="text" id="login" disabled>
+                    <Label for="mdp">Mot de passe :</Label>
+                    <input type="password" id="mdp" disabled>
+                </div>
+
+                `
+            },
+            ListeReserves: {
+                title: 'R&eacuteserves',
+                async render() {
+                    try {
+                        let reserves = await API.getReserves();
+                        if(reserves)
+                        {
+                            reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
+                            return reserves.map(reserve => {
+                                let str = 
+                                `
+                                <div class="reserve" id="reserve${reserve.numero}">
+                                    <h3>${reserve.nom} <button onclick="router.navigate('ajouterIngredient')">Ajouter ingr&eacutedient</button></h3>
+                                    <ul class="listeIngredients">`;
+                                ingredients = Object.entries(reserve.lesIngredients);
+                                console.log(ingredients);
+                                str += ingredients.map(element => {
+                                    const id = element[0];
+                                    const ingredient = element[1];
+                                    const unite = ingredient.quantite.unite == "u" ? "" : ingredient.quantite.unite;
+                                    return `<li>${ingredient.nom} : <input type="number" id="${reserve.numero}-${id}" onchange="API.AjouterModifQuantite(${reserve.numero},${id})" value=${ingredient.quantite.valeur} min=0></input>${unite}</li>`
+                                }).join('');
+                                str += `<button class="sauvegarde" onclick="API.AppliquerModifs()">Sauvegarder</button>`;
+                                return str;
+                            }
+                            ).join('');
+                        } else {
+                            return '<div class="reserve">Pas de r&eacuteserves</div>';
+                        }
+                    } catch(error) {
+                        return `<div class="errMess">${error.message}</div>`;
+                    }
+                }
+            },
+            ajouterIngredient: {
+                title: 'Ajouter un ingredient',
+                async render () {
+                    try {
+                        listeIng = await API.ListeIngredients();
+                        reserves = await API.getReserves();
+                        if(reserves) {
+                            reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
+                            let str=`
+                            <h2>Ajouter un ingredient</h2>     
+                                <div class="formulaire">
+                                    <input type="text" id="recherche" list="lesIngredients" placeholder="ingredient">
+                                    <input type="number" id="quantite" placeholder="quantite" value=1>
+                                    <select id="reserve">`;
+                            str += reserves.map(res => `<option value="${res.numero}">${res.nom}</option>`).join('');
+                            str +=`
+                                    </select>
+                                    <button onclick="API.AjouterIngredient()">Ajouter ingr&eacutedient</button>
+                                </div>`;
+                            str += `<datalist id="lesIngredients">`;
+                            str += listeIng.map(ing => `<option value="${ing[1].nom}" label="${ing[1].nom} ${ing[1].quantite.unite == 'u' ? '' : `(${ing[1].quantite.unite})`}">${ing[1].nom}-(${ing[1].quantite.unite})</option>`).join('');
+                            str += `</datalist>`;
+                            return str;
+                        } else {
+                            return '<div>pas de réserve</div>';
+                        }
+                    } catch(error) {
+                        return `<div class="errMess">${error.message}</div>`;
+                    }
+                    
+                        
+                }
+            }
+        };
+
+        class Router {
+            constructor(routes) {
+                this.routes = routes;
+                this.currentRoute = null;
+                this.init();
+            }
+
+            init() {
+                window.addEventListener('hashchange', () => this.loadRoute());
+                window.addEventListener('load', () => this.loadRoute());
+                this.renderNavigation();
+            }
+
+            renderNavigation() {
+                const nav = document.getElementById('navigation');
+                nav.innerHTML = Object.keys(this.routes).map(route => 
+                    `<a href="#${route}" class="nav-link" data-route="${route}">
+                        ${this.routes[route].title}
+                    </a><br/>`
+                ).join('');
+            }
+
+            loadRoute() {
+                const hash = window.location.hash.slice(1) || 'accueil';
+                this.currentRoute = hash;
+                
+                
+                if(this.routes[hash]) {
+                    this.render(this.routes[hash]);
+                } else {
+                    this.render404();
+                }
+                
+            }
+
+            async render(view) {
+                const contenu = document.getElementById('contenu');
+                contenu.innerHTML = await view.render();
+                document.title = `QFA - ${view.title}`;
+            }
+
+            render404() {
+                const app = document.getElementById('contenu');
+                app.innerHTML = `
+                    <h2> Erreur 404</h2>
+                    <p>La page demandée n'existe pas.</p>
+                    <button onclick="router.navigate('accueil')">Retour à l'accueil</button>
+                `;
+            }
+
+            navigate(route) {
+                window.location.hash = route;
+            }
+        }
+
+        const router = new Router(views);
+
+        const API = {
+            baseURL : 'http://localhost/QuoiFaireAvec/api',
+
+            modifs: [],
+
+            token: null,
+            
+            setToken(token) {
+                this.token = token;
+            },
+            
+            getToken() {
+                return this.token;
+            },
+            
+            clearToken() {
+                this.token = null;
+            },
+
+            getHeaders() {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                const token = this.getToken();
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                
+                return headers;
+            },
+
+            async requeter(endpoint, options ={}) {
+                const url = `${this.baseURL}${endpoint}`;
+                const config = {
+                    ...options,
+                    headers: this.getHeaders()
+                };
+                
+                try {
+                    const res = await fetch(url, config);
+                    if (!res.ok) {
+                        throw new Error(`Erreur HTTP: ${res.status}`);
+                    }
+                    
+                    if(config.method == 'GET') {
+                        return await res.json();
+                    } else {
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Erreur API:', error);
+                    throw error;
+                }
+            },
+
+            //#region GET
+
+            async ConnecterUtilisateur() {
+                const login = document.getElementById('login').value;
+                const mdp = document.getElementById('mdp').value;
+                if (login && mdp) {
+                    const ret = await this.requeter(`/visiteur/verifLoginMotDePasse?login=${login}&mdp=${mdp}`, {method: 'GET'});
+                    const tkn = ret.access_token;
+                    document.cookie = `access_token=${tkn}`;
+                    document.cookie = `login=${login};`;
+                    router.navigate('accueil');
+                }
+            },
+
+            async getReserves() {
+                const login = document.cookie.match(/login=([^;]+)/)[1];
+                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
+                if(login && tkn)
+                {
+                    this.setToken(tkn);
+                    const ret = await this.requeter(`/utilisateur/getAllReserves?login=${login}`, {method: 'GET'});
+                    return ret;
+                }
+                return null;
+            },
+
+            async ListeIngredients() {                
+                return Object.entries(await this.requeter("/visiteur/getIngredients", {method: 'GET'}));
+            },
+
+            //#endregion
+
+            //#region POST
+
+            async CreerReserve() {
+                const login = document.cookie.match(/login=([^;]+)/)[1];
+                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
+                const nom = document.getElementById('nomReserve').value;
+                if(login && tkn && nom) {
+                    this.setToken(tkn);
+                    const body = JSON.stringify({login: login, nom: nom});
+                    this.requeter(`/utilisateur/createReserve`,{method: 'POST', body: body});
+                    document.getElementById('contenu').innerHTML+= `<div class="notif">R&eacuteserve <b>${nom}</b> cr&eacute&eacute</div>`
+                }
+            },
+
+            async CreerIngredient() {
+                const login = document.cookie.match(/login=([^;]+)/)[1];
+                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
+                const nom = document.getElementById('nomIngredient').value;
+                const unite = document.getElementById('uniteIngredient').value;
+                if(login && tkn && nom && unite) {
+                    this.setToken(tkn);
+                    const body = JSON.stringify({login: login, nom: nom, unite: unite});
+                    this.requeter(`/utilisateur/createIngredient`,{method: 'POST', body: body});
+                    document.getElementById('contenu').innerHTML+= `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
+                }
+                document.getElementById('nomIngredient').value = null;
+                document.getElementById('uniteIngredient').value = null;
+            }, 
+            
+            async InscrireUtilisateur() {
+                const login = document.getElementById('login').value;
+                const mdp = document.getElementById('mdp').value;
+                if(login && mdp) {
+                    const body = JSON.stringify({login: login, mdp: mdp});
+                    this.requeter(`/visiteur/creationUtilisateur`,{method: 'POST', body: body});
+                    router.navigate('accueil');
+                }
+            },
+
+            async AjouterIngredient() {
+                const login = document.cookie.match(/login=([^;]+)/)[1];
+                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
+                if(login && tkn) {
+                    const quantite = document.getElementById('quantite').value;
+                    const numero = document.getElementById('reserve').value;
+                    const listeIng = await this.ListeIngredients();
+                    const ingredient = document.getElementById('recherche').value;
+                    const unite = document.getElementById('lesIngredients').innerHTML.match(new RegExp(`${ingredient}-\\s*\\(([^)]+)\\)`))[1];
+                    const idIngredient = listeIng.map(ing => {
+                        if(ing[1].nom == ingredient && ing[1].quantite.unite == unite) {
+                            return ing[0];
+                        }
+                    })[0];
+                    const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                }
+            },
+
+            //#endregion
+
+            //#region PUT/DELETE
+
+            async AjouterModifQuantite(numero,idIngredient) {
+                const login = document.cookie.match(/login=([^;]+)/)[1];
+                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
+                const quantite = document.getElementById(`${numero}-${idIngredient}`).value;
+                if(login && tkn) {
+
+                    const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                    const contenu = {
+                        id: idIngredient,
+                        endpoint: `/utilisateur/modifierQuantite`,
+                        method: 'PUT',
+                        body: body
+                    }
+                    insere = false;
+                    this.modifs.forEach(mod => {
+                        if(mod.id == idIngredient && mod.method == 'PUT') {
+                            mod.body = body;
+                            insere = true;
+                        }
+                    });
+                    if(!insere) {
+                        this.modifs.push(contenu);
+                    }
+                }
+            },
+
+            async AppliquerModifs() {
+                this.modifs.forEach(mod => this.requeter(mod.endpoint,{method: mod.method, body: mod.body}));
+                this.modifs = [];
+            }
+
+            //#endregion
+        }
+
+
+
+
+    </script>
+</html>
