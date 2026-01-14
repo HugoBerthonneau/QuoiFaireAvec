@@ -3,13 +3,13 @@
 include_once("./modeles/ModeleUtilisateur.php");
 include_once("./modeles/ModeleReserve.php");
 include_once("./services/RecipeAPIService.php");
+include_once('Controller.php');
 
-class UtilisateurController {
+class UtilisateurController extends Controller {
     
     #region CONSTRUCTEUR
     
     public function __construct(string $uri) {
-        
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');
         if($method == 'GET') {
@@ -21,8 +21,8 @@ class UtilisateurController {
                     $this->getRecetteAvecListe();
                     break;
                 default:
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Endpoint non trouvé']);
+                    parent::__construct($uri);
+                    
             }
         }
         if($method == 'POST') {
@@ -69,6 +69,12 @@ class UtilisateurController {
                 case "/api/utilisateur/supprimerIngredient":
                     $id = $uriExploded[5];
                     $this->supprimerIngredient($id);
+                    break;
+                case "/api/utilisateur/supprimerIngredientDeReserve":
+                    $login = $uriExploded[4];
+                    $numero = $uriExploded[5];
+                    $idIngredient = $uriExploded[6];
+                    $this->supprimerIngredientDeReserve($login,$numero,$idIngredient);
                     break;
                 case "/api/utilisateur/supprimerReserve":
                     $numero = $uriExploded[5];
@@ -178,7 +184,7 @@ class UtilisateurController {
     #region DELETE
 
     private function supprimerIngredient(string $id) : void {
-        if(!empty($id)) {
+        if(!empty($id+1)) {
                 ModeleIngredient::deleteIngredientById($id);
         } else {
             http_response_code(400);
@@ -187,11 +193,20 @@ class UtilisateurController {
     }
 
     private function supprimerReserve(string $numero, string $login) : void {
-        if(!empty($numero) && !empty($login)) {
+        if($numero !== null && $numero !== "" && !empty($login)) {
             ModeleReserve::deleteReserve($numero,$login);
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'numero et/ou login manquant']);
+        }
+    }
+
+    private function supprimerIngredientDeReserve(string $login, int $numero, int $idIngredient) : void {
+        if($numero !== null && $numero !== "" && !empty($login) && $idIngredient !== null && $idIngredient !== "") {
+            ModeleReserve::deleteIngredientFromReserve($numero,$login,$idIngredient);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'numero et/ou login et/ou idIngredient manquant(s)']);
         }
     }
 

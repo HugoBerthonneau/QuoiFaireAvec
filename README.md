@@ -13,3 +13,5 @@
 * Ajouter une méthode pour déconnecter l'utilisateur
 
 * Chiffrer le mdp dans la requete pour connecter
+
+* Page pour stoquer les recettes précédentes

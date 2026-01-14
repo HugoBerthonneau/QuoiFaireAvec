@@ -165,6 +165,27 @@ class ModeleReserve extends Modele {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
+
+    static public function deleteIngredientFromReserve(string $numero, string $login,int $id) : void {
+        try {
+            $pdo = parent::connexionPDO();
+            $sql = "DELETE FROM Conserver
+                    WHERE login = :login
+                    AND numero = :numero
+                    AND idIngredient = :id";
+            $rqt = $pdo->prepare($sql);
+            $rqt->bindParam(":numero",$numero,PDO::PARAM_INT);
+            $rqt->bindParam(":id",$id,PDO::PARAM_INT);
+            $rqt->bindParam(":login",$login,PDO::PARAM_STR);
+            $rqt->execute();
+            $rqt->closeCursor();
+            $pdo = null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+        }
+    }
+
+    
 }
 
 

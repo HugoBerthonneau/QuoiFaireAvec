@@ -3,8 +3,9 @@
 include_once("./modeles/ModeleUtilisateur.php");
 include_once("./utilitaire/GestionToken.php");
 include_once("./utilitaire/Validation.php");
+include_once('Controller.php');
 
-class VisiteurController {
+class VisiteurController extends Controller  {
 
     public function __construct(string $uri) {
         $uri = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),14);
@@ -25,9 +26,7 @@ class VisiteurController {
                     $this->getIngredients();
                     break;
                 default:
-                    http_response_code(404);
-                    echo json_encode(['error' => 'endpoint non trouvé/authentification invalide']);
-                    break;
+                    parent::__construct($uri);
             }
         }
         if($method == 'POST') {

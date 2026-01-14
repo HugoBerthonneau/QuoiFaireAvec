@@ -46,7 +46,7 @@ class ModeleUtilisateur extends Modele {
         if(!in_array($login,self::getAllLogins())) {
             try {
                 $pdo = parent::connexionPDO();
-                $sql = "INSERT INTO Utilisateur VALUES(:login, :mdp, '')";
+                $sql = "INSERT INTO Utilisateur VALUES(:login, :mdp, 'token')";
                 $rqt = $pdo->prepare($sql);
                 $rqt->bindParam(":login", $login, PDO::PARAM_STR);
                 $rqt->bindParam(":mdp", $mdpHache, PDO::PARAM_STR);
