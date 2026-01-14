@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <style>
-            *{
-                background-color: black;
-                color: white;
-            }
-            #contenu{
-                border: solid white;
-            }
-            .reserve{
-                border: solid grey;
-            }
-        </style>
+        <meta charset=utf8 />
+        <link rel="icon" href="assets/favicon.ico" />
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <header>
             <h1>Quoi Faire Avec</h1>
         </header>
-        <nav id="navigation"></nav>
+        <nav id="navigation">
+        </nav> 
         <div id="contenu">
         </div>
     </body>
@@ -26,25 +18,47 @@
     </footer>
 
     <script>
+        const commons = [
+            navbar= {
+                id: 'navigation',
+                async render () {
+                    let str = `<div class="left"><button onclick="router.navigate('accueil')">Accueil</button>`;
+                    const con = await API.estConnecte();
+                    if(con) {
+                        str += `<button onclick="router.navigate('ListeReserves')">R&eacuteserves</button>`;
+                        str += `<button onclick="router.navigate('creationIngredient')">Creation d'un ingr&eacutedients</button>`;
+                        str += `</div>`;
+                        str += `<div class="right"><button onclick="API.deconnection()">D&eacuteconnexion</button></div>`;
+                    } else {
+                        str += `</div><div class="right">`;
+                        str += `<button onclick="router.navigate('inscriptionUtilisateur')">Inscription</button>`;
+                        str += `<button onclick="router.navigate('connexionUtilisateur')">Connexion</button>`;
+                        str += `</div>`;
+                    }
+                    document.getElementById('navigation').innerHTML = str;
+                    }
+            }
+        ]
+
         const views = {
             accueil: {
-                title: 'Accueil',
-                render: () =>
-                `
+                async render() {
+                    let str =`
+                <div class="accueil">
                 <h2>Accueil</h2>
-                <div>bienvenue sur Quoi Faire Avec ! </div>
+                <p><b>Bienvenue sur Quoi Faire Avec !</b><br/><br/> 
+                    Libérez la puissance de votre créativité culinaire grâce à notre intelligence algorithmique de pointe, conçue pour sublimer chaque ingrédient oublié au fond de votre réfrigérateur. En fusionnant innovation technologique et gastronomie durable, notre plateforme transforme l’inventaire du quotidien en une expérience sensorielle inédite. Réinventez vos habitudes de consommation, réduisez votre empreinte carbone et rejoignez le mouvement de la Smart-Cuisine 2.0 dès aujourd’hui.</p><br/><br/>
+                <button id="genererAleatoire" onclick="API.genererRecetteAleatoire()">G&eacuten&eacuterer 5 recettes Al&eacuteatoire !</button>
                 `
-            },
-            recettes: {
-                title: 'Recettes',
-                render: () =>
-                `
-                    <button id="generer" onclick="API.genererRecetteAleatoire()">G&eacuten&eacuterer une recette Al&eacuteatoire</button>
-                `
-
+                const con = await API.estConnecte();
+                if(con)
+                {
+                    str += `<button id="genererAvecIngredients" onclick="API.genererRecetteIngredients()">G&eacuten&eacuterer 5 recettes avec vos ingr&eacutedients !</button>`;
+                }
+                return str + `</div>`;
+                }      
             },
             creationReserve: {
-                title: 'Creation d\'une r&eacute;serve',
                 render: () => 
                 `
                 <h2>Creation d\'une r&eacute;serve</h2>            
@@ -54,24 +68,55 @@
                 </div>
                 `
             },
-            //TODO : TOUTE LA LISTE DES UNITES 
             creationIngredient: {
-                title: 'Creation d\'un ingr&eacutedient',
                 render: () => 
                 ` 
                 <h2>Creation d\'un ingr&eacutedient</h2>            
                 <div class="formulaire">
                     <input type="text" id="nomIngredient" placeholder="Nom de l'ingr&eacutedient">
                     <select name="unite" id="uniteIngredient">
-                        <option value="kg">kg</option>
-                        <option value="mL">mL</option>
+                        <option value="mg">milligramme (mg)</option>
+                        <option value="g" selected>gramme (g)</option>
+                        <option value="kg">kilogramme (kg)</option>
+                        <option value="lb">livre (lb)</option>
+                        <option value="oz">once (oz)</option>
+                        <option value="ml">millilitre (ml)</option>
+                        <option value="cl">centilitre (cl)</option>
+                        <option value="dl">décilitre (dl)</option>
+                        <option value="l">litre (l)</option>
+                        <option value="pincee">pincée</option>
+                        <option value="pointe">pointe de couteau</option>
+                        <option value="cc">cuillère à café</option>
+                        <option value="cd">cuillère à dessert</option>
+                        <option value="cs">cuillère à soupe</option>
+                        <option value="tasse">tasse (cup)</option>
+                        <option value="bol">bol</option>
+                        <option value="verre">verre</option>
+                        <option value="verre-a-moutarde">verre à moutarde</option>
+                        <option value="louche">louche</option>
+                        <option value="filet">filet</option>
+                        <option value="trait">trait</option>
+                        <option value="goutte">goutte</option>
+                        <option value="unite">unité / pièce</option>
+                        <option value="demi">demi</option>
+                        <option value="quart">quart</option>
+                        <option value="douzaine">douzaine</option>
+                        <option value="botte">botte</option>
+                        <option value="bouquet">bouquet</option>
+                        <option value="gousse">gousse</option>
+                        <option value="branche">branche</option>
+                        <option value="zeste">zeste</option>
+                        <option value="boite">boîte / conserve</option>
+                        <option value="pot">pot</option>
+                        <option value="sachet">sachet</option>
+                        <option value="plaque">plaque (tablette)</option>
+                        <option value="barquette">barquette</option>
                     </select>
                     <button onclick="API.CreerIngredient()">Cr&eacute;er</button>
                 </div>
                 ` 
             },
             connexionUtilisateur: {
-                title: 'Connexion',
                 render: () =>
                 `
                 <h2>Connexion</h2>            
@@ -83,7 +128,6 @@
                 `
             },
             inscriptionUtilisateur: {
-                title: 'Inscription',
                 render: () =>
                 `
                 <h2>Inscription</h2>
@@ -94,29 +138,14 @@
                 </div>
                 `
             },
-            infosUtilisateur: {
-                title: 'Informations',
-                render: () =>
-                `
-                <h2>Informations</h2>
-                <div class="informations">
-                    <Label for="login">Login :</Label>
-                    <input type="text" id="login" disabled>
-                    <Label for="mdp">Mot de passe :</Label>
-                    <input type="password" id="mdp" disabled>
-                </div>
-
-                `
-            },
             ListeReserves: {
-                title: 'R&eacuteserves',
                 async render() {
                     try {
                         let reserves = await API.getReserves();
                         if(reserves)
                         {
                             reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
-                            return reserves.map(reserve => {
+                            return `<button class="ajout" onclick="router.navigate('creationReserve')">+</button> Ajouter une r&eacuteserve` + reserves.map(reserve => {
                                 let str = 
                                 `
                                 <div class="reserve" id="reserve${reserve.numero}">
@@ -127,14 +156,14 @@
                                     const id = element[0];
                                     const ingredient = element[1];
                                     const unite = ingredient.quantite.unite == "u" ? "" : ingredient.quantite.unite;
-                                    return `<li>${ingredient.nom} : <input type="number" id="${reserve.numero}-${id}" onchange="API.AjouterModifQuantite(${reserve.numero},${id})" value=${ingredient.quantite.valeur} min=0></input>${unite}</li>`
+                                    return `<li id="UL${reserve.numero}LI${id}" >${ingredient.nom} : <input type="number" id="${reserve.numero}-${id}" onchange="API.AjouterModifQuantite(${reserve.numero},${id})" value=${ingredient.quantite.valeur} min=0></input>${unite}<button class="supprimer" onclick="API.ajouterSuppression(${reserve.numero},${id})">-</button><br/></li>`
                                 }).join('');
                                 str += `<button class="sauvegarde" onclick="API.AppliquerModifs()">Sauvegarder</button></ul></div>`;
                                 return str;
                             }
                             ).join('');
                         } else {
-                            return '<div class="reserve">Pas de r&eacuteserves</div>';
+                            return '<div>Pas de r&eacuteserves</div>';
                         }
                     } catch(error) {
                         return `<div class="errMess">${error.message}</div>`;
@@ -142,7 +171,6 @@
                 }
             },
             ajouterIngredient: {
-                title: 'Ajouter un ingredient',
                 async render () {
                     try {
                         listeIng = await API.ListeIngredients();
@@ -159,13 +187,14 @@
                             str +=`
                                     </select>
                                     <button onclick="API.AjouterIngredient()">Ajouter ingr&eacutedient</button>
+                                    <button onclick="router.navigate('ListeReserves')">retour aux reserves</button>
                                 </div>`;
                             str += `<datalist id="lesIngredients">`;
                             str += listeIng.map(ing => `<option value="${ing[1].nom}" label="${ing[1].nom} ${ing[1].quantite.unite == 'u' ? '' : `(${ing[1].quantite.unite})`}">${ing[1].nom}-(${ing[1].quantite.unite})</option>`).join('');
                             str += `</datalist>`;
                             return str;
                         } else {
-                            return '<div>pas de réserve</div>';
+                            return '<div>Pas de r&eacuteserves</div>';
                         }
                     } catch(error) {
                         return `<div class="errMess">${error.message}</div>`;
@@ -184,35 +213,29 @@
             init() {
                 window.addEventListener('hashchange', () => this.loadRoute());
                 window.addEventListener('load', () => this.loadRoute());
-                this.renderNavigation();
-            }
-
-            renderNavigation() {
-                const nav = document.getElementById('navigation');
-                nav.innerHTML = Object.keys(this.routes).map(route => 
-                    `<a href="#${route}" class="nav-link" data-route="${route}">
-                        ${this.routes[route].title}
-                    </a><br/>`
-                ).join('');
             }
 
             loadRoute() {
+                this.renderCommons(commons);
                 const hash = window.location.hash.slice(1) || 'accueil';
                 this.currentRoute = hash;
-                
-                
                 if(this.routes[hash]) {
                     this.render(this.routes[hash]);
                 } else {
                     this.render404();
                 }
-                
             }
 
             async render(view) {
                 const contenu = document.getElementById('contenu');
                 contenu.innerHTML = await view.render();
-                document.title = `QFA - ${view.title}`;
+            }
+
+            async renderCommons(commons) {
+                commons.forEach(com => {
+                    const element = document.getElementById(com.id);
+                    com.render();
+                });
             }
 
             render404() {
@@ -231,28 +254,25 @@
 
         const router = new Router(views);
 
-        const API = {
-            baseURL: 'http://localhost/QuoiFaireAvec/api',
+        class API {
+            static baseURL = 'http://localhost/QuoiFaireAvec/api';
+            static cooldown = false;
+            static modifs = []; //liste des modifs a appliquer
+            static token = null;
             
-            cooldown: false,
-
-            modifs: [],
-
-            token: null,
-            
-            setToken(token) {
+            static setToken(token) {
                 this.token = token;
-            },
+            }
             
-            getToken() {
+            static getToken() {
                 return this.token;
-            },
+            }
             
-            clearToken() {
+            static clearToken() {
                 this.token = null;
-            },
+            }
 
-            getHeaders() {
+            static getHeaders() {
                 const headers = {
                     'Content-Type': 'application/json'
                 };
@@ -263,9 +283,9 @@
                 }
                 
                 return headers;
-            },
+            }
 
-            async requeter(endpoint, options ={}) {
+            static async requeter(endpoint, options = {}) {
                 const url = `${this.baseURL}${endpoint}`;
                 const config = {
                     ...options,
@@ -287,11 +307,39 @@
                     console.error('Erreur API:', error);
                     throw error;
                 }
-            },
+            }
+
+            static miseEnPageRecettes(recettes) {
+                return recettes.recettes.map(rec => {
+                    let str =`
+                    <div class="recettes"><h2>${rec.nom} : </h2>
+                    <ul><h3>temps de pr&eacuteparation : </h3><li>${rec.temps_preparation}</li></ul>
+                    <ul><h3>Ingredients :</h3>
+                    `;
+                    str += rec.ingredients.map(ing => `<li>${ing.nom} ${ing.quantite} ${ing.unite}</li>`).join('');
+                    str += `
+                    </ul>
+                    <ul><h3>Preparation : </h3>`;
+                    str += rec.instructions.map(ins => `<li>${ins}</li>`).join('');
+                    str += `</ul></div>`;
+                    return str;
+                    }
+                ).join('');
+            }
+
+            static deconnection() {
+                if(document.cookie)
+                {
+                    document.cookie = `access_token=`;
+                    document.cookie = `login=;`;
+                    router.navigate('accueil');
+                    location.reload();
+                }
+            }
 
             //#region GET
 
-            async ConnecterUtilisateur() {
+            static async ConnecterUtilisateur() {
                 const login = document.getElementById('login').value;
                 const mdp = document.getElementById('mdp').value;
                 if (login && mdp) {
@@ -301,100 +349,105 @@
                     document.cookie = `login=${login};`;
                     router.navigate('accueil');
                 }
-            },
+            }
 
-            async getReserves() {
-                const login = document.cookie.match(/login=([^;]+)/)[1];
-                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                if(login && tkn)
-                {
-                    this.setToken(tkn);
-                    const ret = await this.requeter(`/utilisateur/getAllReserves?login=${login}`, {method: 'GET'});
-                    return ret;
+            static async estConnecte() {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    if(login && tkn)
+                    {
+                        this.setToken(tkn);
+                        const ret = await this.requeter(`/estConnecte?login=${login}`, {method: 'GET'});
+                        if(ret.info == login) {
+                            return true
+                        }
+                    }
+                    return false;
                 }
-                return null;
-            },
+            }
 
-            async genererRecetteAleatoire() {
-                if (this.cooldown) return;
-                btn = document.getElementById('generer');
-                this.cooldown = true;
-                btn.disabled = true;
-                let secondesRestantes = 30;
+            static async getReserves() {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    if(login && tkn)
+                    {
+                        this.setToken(tkn);
+                        const ret = await this.requeter(`/utilisateur/getAllReserves?login=${login}`, {method: 'GET'});
+                        return ret;
+                    }
+                    return null;
+                }
+            }
+
+            static async genererRecetteAleatoire() {
                 document.getElementById('contenu').innerHTML += `<div class="notif">Génération des recettes en cours ...</div>`;
                 const recettes = await this.requeter(`/visiteur/getRecetteAleatoire`,{method: 'GET'});
                 const notif = document.getElementsByClassName('notif')[0];
                 if (notif) {
                     notif.remove();
                 }
-                console.log(recettes);
-                document.getElementById('contenu').innerHTML += recettes.recettes.map(rec => {
-                    let str =`
-                    <div class="recettes"><h2>${rec.nom} : </h2>
-                    <ul><h3>temps de pr&eacuteparation : </h3><li>${rec.temps_preparation}</li></ul>
-                    <ul><h3>Ingredients :</h3>
-                    `;
-                    str += rec.ingredients.map(ing => `<li>${ing.nom} ${ing.quantite} ${ing.unite}</li>`).join('');
-                    str += `
-                    </ul>
-                    <ul><h3>Instructions : </h3>`;
-                    str += rec.instructions.map(ins => `<li>${ins}</li>`).join('');
-                    str += `</ul></div>`;
-                    return str;
+                document.getElementById('contenu').innerHTML += this.miseEnPageRecettes(recettes);
+            }
+
+            static async genererRecetteIngredients() {
+                if(document.cookie) {
+                    btn = document.getElementById('genererAvecIngredients');
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    if(login && tkn) {
+                        document.getElementById('contenu').innerHTML += `<div class="notif">Génération des recettes en cours ...</div>`;
+                        const recettes = await this.requeter(`/utilisateur/getRecetteAvecListe?login=${login}`,{method: 'GET'});
+                        const notif = document.getElementsByClassName('notif')[0];
+                        if (notif) {
+                            notif.remove();
+                        }
+                        document.getElementById('contenu').innerHTML += this.miseEnPageRecettes(recettes);
                     }
-                ).join('');
+                }
+            }
 
-
-                const interval = setInterval(() => {
-                    btn.textContent = `Recharge (${secondesRestantes}s)`;
-                    secondesRestantes--;
-                    if (secondesRestantes < 0) {
-                        clearInterval(interval);
-                        btn.disabled = false;
-                        btn.textContent = "G&eacuten&eacuterer une recette Al&eacuteatoire";
-                        this.cooldown = false;
-                    }
-                }, 1000);
-           
-                
-            },
-
-            async ListeIngredients() {                
+            static async ListeIngredients() {                
                 return Object.entries(await this.requeter("/visiteur/getIngredients", {method: 'GET'}));
-            },
+            }
 
             //#endregion
 
             //#region POST
 
-            async CreerReserve() {
-                const login = document.cookie.match(/login=([^;]+)/)[1];
-                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                const nom = document.getElementById('nomReserve').value;
-                if(login && tkn && nom) {
-                    this.setToken(tkn);
-                    const body = JSON.stringify({login: login, nom: nom});
-                    this.requeter(`/utilisateur/createReserve`,{method: 'POST', body: body});
-                    document.getElementById('contenu').innerHTML += `<div class="notif">R&eacuteserve <b>${nom}</b> cr&eacute&eacute</div>`
+            static async CreerReserve() {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    const nom = document.getElementById('nomReserve').value;
+                    if(login && tkn && nom) {
+                        this.setToken(tkn);
+                        const body = JSON.stringify({login: login, nom: nom});
+                        this.requeter(`/utilisateur/createReserve`,{method: 'POST', body: body});
+                        router.navigate('ListeReserves');
+                    }
                 }
-            },
+            }
 
-            async CreerIngredient() {
-                const login = document.cookie.match(/login=([^;]+)/)[1];
-                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                const nom = document.getElementById('nomIngredient').value;
-                const unite = document.getElementById('uniteIngredient').value;
-                if(login && tkn && nom && unite) {
-                    this.setToken(tkn);
-                    const body = JSON.stringify({login: login, nom: nom, unite: unite});
-                    this.requeter(`/utilisateur/createIngredient`,{method: 'POST', body: body});
-                    document.getElementById('contenu').innerHTML += `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
+            static async CreerIngredient() {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    const nom = document.getElementById('nomIngredient').value;
+                    const unite = document.getElementById('uniteIngredient').value;
+                    if(login && tkn && nom && unite) {
+                        this.setToken(tkn);
+                        const body = JSON.stringify({login: login, nom: nom, unite: unite});
+                        this.requeter(`/utilisateur/createIngredient`,{method: 'POST', body: body});
+                        document.getElementById('contenu').innerHTML += `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
+                    }
+                    document.getElementById('nomIngredient').value = null;
+                    document.getElementById('uniteIngredient').value = null;
                 }
-                document.getElementById('nomIngredient').value = null;
-                document.getElementById('uniteIngredient').value = null;
-            }, 
+            }
             
-            async InscrireUtilisateur() {
+            static async InscrireUtilisateur() {
                 const login = document.getElementById('login').value;
                 const mdp = document.getElementById('mdp').value;
                 if(login && mdp) {
@@ -402,80 +455,107 @@
                     this.requeter(`/visiteur/creationUtilisateur`,{method: 'POST', body: body});
                     router.navigate('accueil');
                 }
-            },
+            }
 
-            async AjouterIngredient() {
+            static async AjouterIngredient() {
                 const notif = document.getElementsByClassName('notif')[0];
                 if (notif) {
                     notif.remove();
                 }
-                const login = document.cookie.match(/login=([^;]+)/)[1];
-                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                const quantite = document.getElementById('quantite').value;
-                const numero = document.getElementById('reserve').value;
-                const ingredient = document.getElementById('recherche').value;
-                if(login && tkn && quantite && numero && ingredient) {
-                    const listeIng = await this.ListeIngredients();
-                    let reserves = await this.getReserves();
-                    reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
-                    const unite = document.getElementById('lesIngredients').innerHTML.match(new RegExp(`${ingredient}-\\s*\\(([^)]+)\\)`))[1];
-                    const ingTrouve = listeIng.find(ing => ing[1].nom == ingredient && ing[1].quantite.unite == unite);
-                    const idIngredient = ingTrouve[0];
-                    let corresp = reserves.find(res => res.numero == numero).lesIngredients;
-                    corresp = Object.entries(corresp).find(ing => ing[0] == idIngredient);
-                    if(!corresp) {
-                        const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
-                        this.requeter(`/utilisateur/ajouterIngredient`,{method: 'POST',body: body});
-                        document.getElementById('recherche').value = null;
-                        document.getElementById('quantite').value = 1;
-                        document.getElementById('contenu').innerHTML += `<div class="notif">L'ingredient <b>${ingTrouve[1].nom}</b> &agrave &eacutet&eacute ajout&eacute</div>`
-                    }
-                    else {
-                        document.getElementById('contenu').innerHTML += `<div class="notif">L'ingredient <b>${corresp[1].nom}</b> est d&eacutej&agrave dans cette r&eacuteserve</div>`
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    const quantite = document.getElementById('quantite').value;
+                    const numero = document.getElementById('reserve').value;
+                    const ingredient = document.getElementById('recherche').value;
+                    if(login && tkn && quantite && numero && ingredient) {
+                        const listeIng = await this.ListeIngredients();
+                        let reserves = await this.getReserves();
+                        reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
+                        
+                        //TODO: probleme avec les unités ou jsp quoi
+                        const unite = document.getElementById('lesIngredients').innerHTML.match(new RegExp(`${ingredient}-\\s*\\(([^)]+)\\)`))[1];
+                        const ingTrouve = listeIng.find(ing => ing[1].nom == ingredient && ing[1].quantite.unite == unite);
+                        if(ingTrouve) {
+                            const idIngredient = ingTrouve[0];
+                            let corresp = reserves.find(res => res.numero == numero).lesIngredients;
+                            corresp = Object.entries(corresp).find(ing => ing[0] == idIngredient);
+                            if(!corresp) {
+                                const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                                this.requeter(`/utilisateur/ajouterIngredient`,{method: 'POST',body: body});
+                                document.getElementById('recherche').value = null;
+                                document.getElementById('quantite').value = 1;
+                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${ingTrouve[1].nom}</b> &agrave &eacutet&eacute ajout&eacute</div>`
+                            }
+                            else {
+                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${corresp[1].nom}</b> est d&eacutej&agrave dans cette r&eacuteserve</div>`
+                            }
+                        }
+                        else {
+                            document.getElementById('contenu').innerHTML += `<div class="notif">Ingrédient Inconnu</div>`
+
+                        }
                     }
                 }
-            },
+            }
 
             //#endregion
 
             //#region PUT/DELETE
 
-            async AjouterModifQuantite(numero,idIngredient) {
-                const login = document.cookie.match(/login=([^;]+)/)[1];
-                const tkn = document.cookie.match(/access_token=([^;]+)/)[1];
-                const quantite = document.getElementById(`${numero}-${idIngredient}`).value;
-                if(login && tkn) {
-
-                    const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
-                    const contenu = {
-                        id: idIngredient,
-                        endpoint: `/utilisateur/modifierQuantite`,
-                        method: 'PUT',
-                        body: body
-                    }
-                    insere = false;
-                    this.modifs.forEach(mod => {
-                        if(mod.id == idIngredient && mod.method == 'PUT') {
-                            mod.body = body;
-                            insere = true;
+            static async AjouterModifQuantite(numero,idIngredient) {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    const quantite = document.getElementById(`${numero}-${idIngredient}`).value;
+                    if(login && tkn) {
+                        const body = JSON.stringify({login: login, numero: numero, idIngredient: idIngredient, nombre: quantite});
+                        const contenu = {
+                            id: idIngredient,
+                            endpoint: `/utilisateur/modifierQuantite`,
+                            method: 'PUT',
+                            body: body
                         }
-                    });
-                    if(!insere) {
+                        let insere = false;
+                        this.modifs.forEach(mod => {
+                            if(mod.id == idIngredient && mod.method == 'PUT') {
+                                mod.body = body;
+                                insere = true;
+                            }
+                        });
+                        if(!insere) {
+                            this.modifs.push(contenu);
+                        }
+                    }
+                }
+            }
+
+            static async ajouterSuppression(numero,idIngredient) {
+                if(document.cookie) {
+                    const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
+                    const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
+                    if(login && tkn) {
+                        const contenu = {
+                            endpoint: `/utilisateur/supprimerIngredientDeReserve/${login}/${numero}/${idIngredient}`,
+                            method: 'DELETE',
+                            body: null,
+                        }
+                        document.getElementById(`UL${numero}LI${idIngredient}`).remove();
                         this.modifs.push(contenu);
                     }
                 }
-            },
+            }
 
-            async AppliquerModifs() {
-                this.modifs.forEach(mod => this.requeter(mod.endpoint,{method: mod.method, body: mod.body}));
+            static async AppliquerModifs() {
+                this.modifs.forEach(mod => {
+                    this.requeter(mod.endpoint,{method: mod.method, body: mod.body});
+                });
+                
                 this.modifs = [];
             }
 
             //#endregion
         }
-
-
-
 
     </script>
 </html>
