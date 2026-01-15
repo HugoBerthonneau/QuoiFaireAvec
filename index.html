@@ -189,6 +189,7 @@
                                     <button onclick="API.AjouterIngredient()">Ajouter ingr&eacutedient</button>
                                     <button onclick="router.navigate('ListeReserves')">retour aux reserves</button>
                                 </div>`;
+                                //TODO: refresh la liste des reserves au retour
                             str += `<datalist id="lesIngredients">`;
                             str += listeIng.map(ing => `<option value="${ing[1].nom}" label="${ing[1].nom} ${ing[1].quantite.unite == 'u' ? '' : `(${ing[1].quantite.unite})`}">${ing[1].nom}-(${ing[1].quantite.unite})</option>`).join('');
                             str += `</datalist>`;
