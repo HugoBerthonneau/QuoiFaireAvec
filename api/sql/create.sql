@@ -1,4 +1,3 @@
-DROP DATABASE dbQFA;
 CREATE DATABASE IF NOT EXISTS dbQFA;
 USE dbQFA;
 
@@ -38,12 +37,13 @@ CREATE TABLE IF NOT EXISTS Conserver
 
 
 -- INSERTION POUR LE TEST
-
+/*
 INSERT INTO Utilisateur (login, mdp,token) VALUES
 ('jean_dupont', '$2y$12$YkWcnX7Q17T2cNCMLx9jKOtUF/1AvDwycX7XYJzppdB7QCCg3G8QS','token'), -- P@ssword1
 ('marie_curie', '$2y$12$NsyXUv9pL05Q2cvb7/jX2.dyli7CL8dNdDtcEWz4qJj6aUegE8BXq','token'), -- Radium2024
 ('albert_ein', '$2y$12$8kA/EPzC3SPzr0yuK0lfSOk8RI0mG2eXEYIvDMQtY9HdgfX6ZmlMy','token') -- Relativite
 ;
+*/
 
 -- Légumes
 INSERT INTO Ingredient (nom, unite) VALUES
@@ -280,7 +280,7 @@ INSERT INTO Ingredient (nom, unite) VALUES
 ('Cornichon', 'g'),
 ('Anchois', 'g'),
 ('Parmesan râpé', 'g');
-
+/*
 -- Pour jean_dupont
 INSERT INTO Reserve (numero, nom, login) VALUES
 (1, 'Réfrigérateur', 'jean_dupont'),
@@ -403,7 +403,7 @@ INSERT INTO Conserver (numero, login, idIngredient, quantite) VALUES
 -- Produits de boulangerie (Cave)
 (0, 'marie_curie', 165, 500.00),  -- Farine complète 500g
 (0, 'marie_curie', 166, 200.00);  --
-
+*/
 -- utilisateurs et droits
 
 DROP USER 'accesUtilisateur'@'localhost';

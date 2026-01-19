@@ -6,7 +6,8 @@ class RecipeAPIService {
 
     static public function genererRecetteAleatoire(): array {
         $url = 'https://openrouter.ai/api/v1/chat/completions';
-        $model = 'tngtech/deepseek-r1t2-chimera:free';
+        //$model = 'tngtech/deepseek-r1t2-chimera:free';
+        $model = 'xiaomi/mimo-v2-flash:free';
         $apiKey = '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';
         
         $systemPrompt = "Tu es un assistant culinaire. Tu dois UNIQUEMENT répondre avec du JSON valide, sans texte avant ou après, sans balises markdown (pas de ```json ni ```). Le JSON doit contenir un tableau 'recettes' avec 5 recettes.";
