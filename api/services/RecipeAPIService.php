@@ -8,7 +8,7 @@ class RecipeAPIService {
         $url = 'https://openrouter.ai/api/v1/chat/completions';
         //$model = 'tngtech/deepseek-r1t2-chimera:free';
         $model = 'xiaomi/mimo-v2-flash:free';
-        $apiKey = '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';
+        $apiKey = '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';
         
         $systemPrompt = "Tu es un assistant culinaire. Tu dois UNIQUEMENT répondre avec du JSON valide, sans texte avant ou après, sans balises markdown (pas de ```json ni ```). Le JSON doit contenir un tableau 'recettes' avec 5 recettes.";
     
@@ -110,8 +110,10 @@ class RecipeAPIService {
     static function genererRecetteAvecIngredients(array $reserves) : array {
 
         $url = 'https://openrouter.ai/api/v1/chat/completions';
-        $model = 'tngtech/deepseek-r1t2-chimera:free';
-        $apiKey = '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';
+        // $model = 'tngtech/deepseek-r1t2-chimera:free';
+        $model = 'xiaomi/mimo-v2-flash:free';
+        $apiKey = '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';
+
 
         $userPrompt = "À partir des ingrédients suivants UNIQUEMENT : ";
 

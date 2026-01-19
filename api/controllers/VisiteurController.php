@@ -8,16 +8,14 @@ include_once('Controller.php');
 class VisiteurController extends Controller  {
 
     public function __construct(string $uri) {
-        $uri = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),14);
+        $uriExploded = explode("/QuoiFaireAvec",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        $uri = $uriExploded[1];
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');
         if($method == 'GET') {
             switch($uri) {
                 case "/api/visiteur/verifLoginMotDePasse":
                     $this->verifLoginMotDePasse();
-                    break;
-                case "/api/visiteur/getRecetteAleatoire":
-                    $this->getRecetteAleatoire();                    
                     break;
                 case "/api/visiteur/getRecetteAleatoire":
                     $this->getRecetteAleatoire();
@@ -69,7 +67,7 @@ class VisiteurController extends Controller  {
     }
 
     private function getRecetteAleatoire() : void {
-        echo json_encode(RecipeAPIService::genererRecetteAleatoire()["data"]);
+        echo json_encode(RecipeAPIService::genererRecetteAleatoire()['data']);
     }
 
     private function getIngredients() : void {

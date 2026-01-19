@@ -4,7 +4,8 @@ include_once("./modeles/ModeleUtilisateur.php");
 
 class Controller {
     public function __construct(string $uri) {
-        $uri = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),14);
+        $uriExploded = explode("/QuoiFaireAvec",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        $uri = $uriExploded[1];
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');
         if($method == 'GET') {

@@ -256,7 +256,7 @@
         const router = new Router(views);
 
         class API {
-            static baseURL = 'http://localhost/QuoiFaireAvec/api';
+            static baseURL = 'http://localhost/Berthonneau/QuoiFaireAvec/api';
             static cooldown = false;
             static modifs = []; //liste des modifs a appliquer
             static token = null;
@@ -394,7 +394,6 @@
 
             static async genererRecetteIngredients() {
                 if(document.cookie) {
-                    btn = document.getElementById('genererAvecIngredients');
                     const login = document.cookie.match(/login=([^;]+)/) ? document.cookie.match(/login=([^;]+)/)[1] : null;
                     const tkn = document.cookie.match(/access_token=([^;]+)/) ? document.cookie.match(/access_token=([^;]+)/)[1] : null;
                     if(login && tkn) {
