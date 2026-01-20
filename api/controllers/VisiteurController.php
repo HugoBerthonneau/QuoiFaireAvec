@@ -8,8 +8,8 @@ include_once('Controller.php');
 class VisiteurController extends Controller  {
 
     public function __construct(string $uri) {
-        $uriExploded = explode("/QuoiFaireAvec",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-        $uri = $uriExploded[1];
+        $uriExploded = explode("/api",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        $uri = "/api" . $uriExploded[1];
         $method = $_SERVER['REQUEST_METHOD'];
         header('Content-Type: application/json; charset=UTF-8');
         if($method == 'GET') {

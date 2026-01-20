@@ -256,7 +256,7 @@
         const router = new Router(views);
 
         class API {
-            static baseURL = window.location.href.split("QuoiFaireAvec")[0] + '/QuoiFaireAvec/api';
+            static baseURL = window.location.href + 'api';
             static cooldown = false;
             static modifs = []; //liste des modifs a appliquer
             static token = null;
