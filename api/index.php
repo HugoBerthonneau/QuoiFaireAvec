@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 include_once('controllers/VisiteurController.php');
 include_once('controllers/UtilisateurController.php');
 
-$uriExploded = explode("/QuoiFaireAvec",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-$uri = "QuoiFaireAvec" . $uriExploded[1];
+$uriExploded = explode("/api",parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$uri = "/api" . $uriExploded[1];
 
 $method = $_SERVER['REQUEST_METHOD'];
 $headers = getallheaders();
