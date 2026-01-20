@@ -18,6 +18,8 @@
     </footer>
 
     <script>
+
+        //éléments communs a toutes les vues
         const commons = [
             navbar= {
                 id: 'navigation',
@@ -39,7 +41,8 @@
                     }
             }
         ]
-
+        
+        //liste des vues
         const views = {
             accueil: {
                 async render() {
@@ -204,6 +207,7 @@
             }
         };
 
+        //classe router qui permet la gestion des vues
         class Router {
             constructor(routes) {
                 this.routes = routes;
@@ -216,6 +220,7 @@
                 window.addEventListener('load', () => this.loadRoute());
             }
 
+            //charge la vue correspondante celle en URL
             loadRoute() {
                 this.renderCommons(commons);
                 const hash = window.location.hash.slice(1) || 'accueil';
@@ -227,11 +232,13 @@
                 }
             }
 
+            //charge la vue demandée
             async render(view) {
                 const contenu = document.getElementById('contenu');
                 contenu.innerHTML = await view.render();
             }
 
+            //charge les parties communes
             async renderCommons(commons) {
                 commons.forEach(com => {
                     const element = document.getElementById(com.id);
@@ -239,6 +246,7 @@
                 });
             }
 
+            //vue d'erreur
             render404() {
                 const app = document.getElementById('contenu');
                 app.innerHTML = `
@@ -248,6 +256,7 @@
                 `;
             }
 
+            //change de vue
             navigate(route) {
                 window.location.hash = route;
             }
@@ -255,8 +264,10 @@
 
         const router = new Router(views);
 
+
+        //Classe pour requeter le back (API)
         class API {
-            static baseURL = window.location.href + 'api';
+            static baseURL = window.location.href.split('#')[0] + 'api';
             static cooldown = false;
             static modifs = []; //liste des modifs a appliquer
             static token = null;
@@ -286,7 +297,9 @@
                 return headers;
             }
 
+            //methode qui requete l'API
             static async requeter(endpoint, options = {}) {
+                
                 const url = `${this.baseURL}${endpoint}`;
                 const config = {
                     ...options,
