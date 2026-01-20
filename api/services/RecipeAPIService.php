@@ -4,11 +4,28 @@ include_once("./classes/Reserve.php");
 
 class RecipeAPIService {
 
+    static private function getOpenRouterAPIKey() : string {
+        $path = __DIR__ . '/.env';
+        if (!file_exists(__DIR__ . '/.env')) {
+            return null;
+        }
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0) continue; // Ignore les commentaires
+            list($name, $value) = explode('=', $line, 2);
+            return trim($value);
+        }
+    }
+
     static public function genererRecetteAleatoire(): array {
+        $apiKey = self::getOpenRouterAPIKey();
+        if($apiKey == null) {
+            return ['data' => 'pas de clé API'];
+        }
         $url = 'https://openrouter.ai/api/v1/chat/completions';
         //$model = 'tngtech/deepseek-r1t2-chimera:free';
         $model = 'xiaomi/mimo-v2-flash:free';
-        $apiKey = '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';
+        
         
         $systemPrompt = "Tu es un assistant culinaire. Tu dois UNIQUEMENT répondre avec du JSON valide, sans texte avant ou après, sans balises markdown (pas de ```json ni ```). Le JSON doit contenir un tableau 'recettes' avec 5 recettes.";
     
@@ -108,12 +125,14 @@ class RecipeAPIService {
     }
 
     static function genererRecetteAvecIngredients(array $reserves) : array {
-
+        $apiKey = self::getOpenRouterAPIKey();
+        if($apiKey == null) {
+            return ['data' => 'pas de clé API'];
+        }
         $url = 'https://openrouter.ai/api/v1/chat/completions';
-        // $model = 'tngtech/deepseek-r1t2-chimera:free';
+        //$model = 'tngtech/deepseek-r1t2-chimera:free';
         $model = 'xiaomi/mimo-v2-flash:free';
-        $apiKey = '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';
-
+        
 
         $userPrompt = "À partir des ingrédients suivants UNIQUEMENT : ";
 

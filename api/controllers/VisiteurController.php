@@ -34,7 +34,7 @@ class VisiteurController extends Controller  {
                     break;
                 default:
                     http_response_code(404);
-                    echo json_encode(['error' => 'endpoint non trouvé/authentification invalide']);
+                    echo json_encode(["error" => "endpoint non trouvé/authentification invalide"]);
                     break;
             }    
         }
@@ -56,12 +56,12 @@ class VisiteurController extends Controller  {
                         }';
             } else {
                 http_response_code(400);
-                echo json_encode(['error' => 'mot de passe incorrect']);
+                echo json_encode(["error" => "mot de passe incorrect"]);
 
             }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'login et/ou de mot de passe manquant']);
+            echo json_encode(["error" => "login et/ou de mot de passe manquant"]);
 
         }
     }
@@ -84,11 +84,11 @@ class VisiteurController extends Controller  {
             $res = ModeleUtilisateur::insertUtilisateur($param['login'], password_hash($param['mdp'], PASSWORD_DEFAULT));
             if(!$res) {
                 http_response_code(400);
-                echo json_encode(['error' => 'erreur lors de l\'insertion de l\'utilisateur']);
+                echo json_encode(["error" => "erreur lors de l\'insertion de l\'utilisateur"]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'login et/ou de mot de passe manquant ou invalides']);
+            echo json_encode(["error" => "login et/ou de mot de passe manquant ou invalides"]);
         }
     }
 

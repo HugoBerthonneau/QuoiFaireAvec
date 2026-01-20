@@ -25,10 +25,10 @@
                     let str = `<div class="left"><button onclick="router.navigate('accueil')">Accueil</button>`;
                     const con = await API.estConnecte();
                     if(con) {
-                        str += `<button onclick="router.navigate('ListeReserves')">R&eacuteserves</button>`;
-                        str += `<button onclick="router.navigate('creationIngredient')">Creation d'un ingr&eacutedients</button>`;
+                        str += `<button onclick="router.navigate('ListeReserves')">Réserves</button>`;
+                        str += `<button onclick="router.navigate('creationIngredient')">Creation d'un ingrédients</button>`;
                         str += `</div>`;
-                        str += `<div class="right"><button onclick="API.deconnection()">D&eacuteconnexion</button></div>`;
+                        str += `<div class="right"><button onclick="API.deconnection()">Déconnexion</button></div>`;
                     } else {
                         str += `</div><div class="right">`;
                         str += `<button onclick="router.navigate('inscriptionUtilisateur')">Inscription</button>`;
@@ -48,12 +48,12 @@
                 <h2>Accueil</h2>
                 <p><b>Bienvenue sur Quoi Faire Avec !</b><br/><br/> 
                     Libérez la puissance de votre créativité culinaire grâce à notre intelligence algorithmique de pointe, conçue pour sublimer chaque ingrédient oublié au fond de votre réfrigérateur. En fusionnant innovation technologique et gastronomie durable, notre plateforme transforme l’inventaire du quotidien en une expérience sensorielle inédite. Réinventez vos habitudes de consommation, réduisez votre empreinte carbone et rejoignez le mouvement de la Smart-Cuisine 2.0 dès aujourd’hui.</p><br/><br/>
-                <button id="genererAleatoire" onclick="API.genererRecetteAleatoire()">G&eacuten&eacuterer 5 recettes Al&eacuteatoire !</button>
+                <button id="genererAleatoire" onclick="API.genererRecetteAleatoire()">Générer 5 recettes Aléatoire !</button>
                 `
                 const con = await API.estConnecte();
                 if(con)
                 {
-                    str += `<button id="genererAvecIngredients" onclick="API.genererRecetteIngredients()">G&eacuten&eacuterer 5 recettes avec vos ingr&eacutedients !</button>`;
+                    str += `<button id="genererAvecIngredients" onclick="API.genererRecetteIngredients()">Générer 5 recettes avec vos ingrédients !</button>`;
                 }
                 return str + `</div>`;
                 }      
@@ -61,19 +61,19 @@
             creationReserve: {
                 render: () => 
                 `
-                <h2>Creation d\'une r&eacute;serve</h2>            
+                <h2>Creation d\'une réserve</h2>            
                 <div class="formulaire">
-                    <input type="text" id="nomReserve" placeholder="Nom de la r&eacute;serve">
-                    <button onclick="API.CreerReserve()">Cr&eacute;er</button>
+                    <input type="text" id="nomReserve" placeholder="Nom de la réserve">
+                    <button onclick="API.CreerReserve()">Créer</button>
                 </div>
                 `
             },
             creationIngredient: {
                 render: () => 
                 ` 
-                <h2>Creation d\'un ingr&eacutedient</h2>            
+                <h2>Creation d\'un ingrédient</h2>            
                 <div class="formulaire">
-                    <input type="text" id="nomIngredient" placeholder="Nom de l'ingr&eacutedient">
+                    <input type="text" id="nomIngredient" placeholder="Nom de l'ingrédient">
                     <select name="unite" id="uniteIngredient">
                         <option value="mg">milligramme (mg)</option>
                         <option value="g" selected>gramme (g)</option>
@@ -112,7 +112,7 @@
                         <option value="plaque">plaque (tablette)</option>
                         <option value="barquette">barquette</option>
                     </select>
-                    <button onclick="API.CreerIngredient()">Cr&eacute;er</button>
+                    <button onclick="API.CreerIngredient()">Créer</button>
                 </div>
                 ` 
             },
@@ -145,11 +145,11 @@
                         if(reserves)
                         {
                             reserves = Array.isArray(reserves) ? reserves : [reserves[1]];
-                            return `<button class="ajout" onclick="router.navigate('creationReserve')">+</button> Ajouter une r&eacuteserve` + reserves.map(reserve => {
+                            return `<button class="ajout" onclick="router.navigate('creationReserve')">+</button> Ajouter une réserve` + reserves.map(reserve => {
                                 let str = 
                                 `
                                 <div class="reserve" id="reserve${reserve.numero}">
-                                    <h3>${reserve.nom} <button onclick="router.navigate('ajouterIngredient')">Ajouter ingr&eacutedient</button></h3>
+                                    <h3>${reserve.nom} <button onclick="router.navigate('ajouterIngredient')">Ajouter ingrédient</button></h3>
                                     <ul class="listeIngredients">`;
                                 ingredients = Object.entries(reserve.lesIngredients);
                                 str += ingredients.map(element => {
@@ -163,7 +163,7 @@
                             }
                             ).join('');
                         } else {
-                            return '<div>Pas de r&eacuteserves</div>';
+                            return '<div>Pas de réserves</div>';
                         }
                     } catch(error) {
                         return `<div class="errMess">${error.message}</div>`;
@@ -186,7 +186,7 @@
                             str += reserves.map(res => `<option value="${res.numero}">${res.nom}</option>`).join('');
                             str +=`
                                     </select>
-                                    <button onclick="API.AjouterIngredient()">Ajouter ingr&eacutedient</button>
+                                    <button onclick="API.AjouterIngredient()">Ajouter ingrédient</button>
                                     <button onclick="router.navigate('ListeReserves')">retour aux reserves</button>
                                 </div>`;
                                 //TODO: refresh la liste des reserves au retour
@@ -195,7 +195,7 @@
                             str += `</datalist>`;
                             return str;
                         } else {
-                            return '<div>Pas de r&eacuteserves</div>';
+                            return '<div>Pas de réserves</div>';
                         }
                     } catch(error) {
                         return `<div class="errMess">${error.message}</div>`;
@@ -256,7 +256,7 @@
         const router = new Router(views);
 
         class API {
-            static baseURL = 'http://localhost/Berthonneau/QuoiFaireAvec/api';
+            static baseURL = window.location.href.split("QuoiFaireAvec")[0] + '/QuoiFaireAvec/api';
             static cooldown = false;
             static modifs = []; //liste des modifs a appliquer
             static token = null;
@@ -296,7 +296,8 @@
                 try {
                     const res = await fetch(url, config);
                     if (!res.ok) {
-                        throw new Error(`Erreur HTTP: ${res.status}`);
+                        const errorText = await res.text().catch(() => "");
+                        return JSON.parse(errorText);
                     }
                     
                     if(config.method == 'GET') {
@@ -304,6 +305,9 @@
                     } else {
                         return null;
                     }
+                    
+                    
+
                 } catch (error) {
                     console.error('Erreur API:', error);
                     throw error;
@@ -314,7 +318,7 @@
                 return recettes.recettes.map(rec => {
                     let str =`
                     <div class="recettes"><h2>${rec.nom} : </h2>
-                    <ul><h3>temps de pr&eacuteparation : </h3><li>${rec.temps_preparation}</li></ul>
+                    <ul><h3>temps de préparation : </h3><li>${rec.temps_preparation}</li></ul>
                     <ul><h3>Ingredients :</h3>
                     `;
                     str += rec.ingredients.map(ing => `<li>${ing.nom} ${ing.quantite} ${ing.unite}</li>`).join('');
@@ -426,6 +430,8 @@
                         const body = JSON.stringify({login: login, nom: nom});
                         this.requeter(`/utilisateur/createReserve`,{method: 'POST', body: body});
                         router.navigate('ListeReserves');
+                        location.reload();
+
                     }
                 }
             }
@@ -440,7 +446,7 @@
                         this.setToken(tkn);
                         const body = JSON.stringify({login: login, nom: nom, unite: unite});
                         this.requeter(`/utilisateur/createIngredient`,{method: 'POST', body: body});
-                        document.getElementById('contenu').innerHTML += `<div class="notif">Ingredient <b>${nom}</b> cr&eacute&eacute</div>`
+                        document.getElementById('contenu').innerHTML += `<div class="notif">Ingredient <b>${nom}</b> créé</div>`;
                     }
                     document.getElementById('nomIngredient').value = null;
                     document.getElementById('uniteIngredient').value = null;
@@ -452,8 +458,13 @@
                 const mdp = document.getElementById('mdp').value;
                 if(login && mdp) {
                     const body = JSON.stringify({login: login, mdp: mdp});
-                    this.requeter(`/visiteur/creationUtilisateur`,{method: 'POST', body: body});
-                    router.navigate('accueil');
+                    const ret = await this.requeter(`/visiteur/creationUtilisateur`,{method: 'POST', body: body});
+                    if(ret) {
+                        document.getElementById('contenu').innerHTML += `<div class="notif">${ret["error"]}</div>`;
+                        return;
+                    }
+                    API.ConnecterUtilisateur();
+
                 }
             }
 
@@ -485,10 +496,10 @@
                                 this.requeter(`/utilisateur/ajouterIngredient`,{method: 'POST',body: body});
                                 document.getElementById('recherche').value = null;
                                 document.getElementById('quantite').value = 1;
-                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${ingTrouve[1].nom}</b> &agrave &eacutet&eacute ajout&eacute</div>`
+                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${ingTrouve[1].nom}</b> &agrave été ajouté</div>`
                             }
                             else {
-                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${corresp[1].nom}</b> est d&eacutej&agrave dans cette r&eacuteserve</div>`
+                                document.getElementById('contenu').innerHTML += `<div class="notif">L'ingrédient <b>${corresp[1].nom}</b> est déj&agrave dans cette réserve</div>`
                             }
                         }
                         else {
@@ -540,7 +551,8 @@
                             method: 'DELETE',
                             body: null,
                         }
-                        document.getElementById(`UL${numero}LI${idIngredient}`).remove();
+                        document.getElementById(`UL${numero}LI${idIngredient}`).style.backgroundColor = "darkred";
+                        document.getElementById(`UL${numero}LI${idIngredient}`).style.color = "white";
                         this.modifs.push(contenu);
                     }
                 }
@@ -552,6 +564,8 @@
                 });
                 
                 this.modifs = [];
+                location.reload();
+
             }
 
             //#endregion
